@@ -1,0 +1,6 @@
+exports.clientsData = require('./clients')
+exports.entertainersData = require('./entertainers')
+exports.categoriesData = require('./categories')
+exports.locationsData = require('./locations')
+exports.availabilityData = require('./availability')
+exports.bookingsData = require('./bookings')
