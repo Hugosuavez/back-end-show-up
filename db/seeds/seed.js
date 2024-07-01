@@ -2,8 +2,8 @@ const format = require("pg-format");
 const db = require("../connection");
 
 const seed = ({
-  clientsData,
-  entertainersData,
+  userTypesData,
+  usersData,
   availabilityData,
   categoriesData,
   locationsData,
@@ -22,10 +22,13 @@ const seed = ({
       return db.query(`DROP TABLE IF EXISTS messages`);
     })
     .then(() => {
-      return db.query(`DROP TABLE IF EXISTS entertainers`);
+      return db.query(`DROP TABLE IF EXISTS userMedia`);
     })
     .then(() => {
-      return db.query(`DROP TABLE IF EXISTS clients`);
+      return db.query(`DROP TABLE IF EXISTS users`);
+    })
+    .then(() => {
+      return db.query(`DROP TABLE IF EXISTS userTypes`);
     })
     .then(() => {
       return db.query(`DROP TABLE IF EXISTS categories`);
@@ -46,37 +49,38 @@ const seed = ({
       return Promise.all([locationsTablePromise, categoriesTablePromise]);
     })
     .then(() => {
+      return db.query(`CREATE TABLE userTypes (
+            type VARCHAR PRIMARY KEY,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );`);
+    })
+    .then(() => {
       return db.query(`
-           CREATE TABLE clients (
-           client_id SERIAL PRIMARY KEY,
+           CREATE TABLE users (
+           user_id SERIAL PRIMARY KEY,
            username VARCHAR NOT NULL,
            password VARCHAR NOT NULL,
            first_name VARCHAR NOT NULL,
            last_name VARCHAR NOT NULL,
            email VARCHAR NOT NULL,
-           profile_img_url VARCHAR
+           profile_img_url VARCHAR,
+           user_type VARCHAR NOT NULL REFERENCES userTypes(type), 
+           category VARCHAR NULL REFERENCES categories(category),
+           location VARCHAR NULL REFERENCES locations(location),
+           entertainer_name VARCHAR NULL,
+           description VARCHAR NULL,
+           price INT NULL,
+           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
            ); 
             `);
     })
     .then(() => {
-      return db.query(`
-            CREATE TABLE entertainers (
-            entertainer_id SERIAL PRIMARY KEY,
-            username VARCHAR NOT NULL,
-            password VARCHAR NOT NULL,
-            category VARCHAR NOT NULL REFERENCES categories(category),
-            location VARCHAR NOT NULL REFERENCES locations(location),
-            entertainer_name VARCHAR NOT NULL,
-            first_name VARCHAR NOT NULL,
-            last_name VARCHAR NOT NULL,
-            email VARCHAR NOT NULL,
-            description VARCHAR NOT NULL,
-            price INT NOT NULL,
-            profile_img_url VARCHAR,
-            show_photos_url VARCHAR,
-            video_link VARCHAR
-            )
-            ;`);
+      return db.query(`CREATE TABLE userMedia (
+            media_id SERIAL PRIMARY KEY,
+            url VARCHAR NOT NULL,
+            user_id INT NOT NULL REFERENCES users(user_id),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );`);
     })
     .then(() => {
       return db.query(`CREATE TABLE messages (
@@ -92,8 +96,8 @@ const seed = ({
     .then(() => {
       return db.query(`CREATE TABLE bookings (
             booking_id SERIAL PRIMARY KEY,
-            client_id INT NOT NULL REFERENCES clients(client_id),
-            entertainer_id INT NOT NULL REFERENCES entertainers(entertainer_id),
+            user_id INT NOT NULL REFERENCES users(user_id),
+            entertainer_id INT NOT NULL REFERENCES users(user_id),
             booking_date DATE NOT NULL,
             event_details VARCHAR NOT NULL,
             address VARCHAR NOT NULL
@@ -104,14 +108,14 @@ const seed = ({
             id SERIAL PRIMARY KEY,
             total_amount INT NOT NULL,
             date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            payee INT NOT NULL REFERENCES clients(client_id),
-            recipient INT NOT NULL REFERENCES entertainers(entertainer_id)
+            payee INT NOT NULL REFERENCES users(user_id),
+            recipient INT NOT NULL REFERENCES users(user_id)
             );`);
     })
     .then(() => {
       return db.query(`CREATE TABLE availability (
             availability_id SERIAL PRIMARY KEY,
-            entertainer_id INT NOT NULL REFERENCES entertainers(entertainer_id),
+            entertainer_id INT NOT NULL REFERENCES users(user_id),
             date DATE NOT NULL,
             available BOOLEAN
             );`);
@@ -130,67 +134,49 @@ const seed = ({
 
       const categoriesPromise = db.query(insertCategoriesQueryStr);
 
-      const insertClientsQueryStr = format(
-        "INSERT INTO clients (username, password, first_name, last_name, email, profile_img_url) VALUES %L",
-        clientsData.map(
-          ({
-            username,
-            password,
-            first_name,
-            last_name,
-            email,
-            profile_img_url,
-          }) => [
-            username,
-            password,
-            first_name,
-            last_name,
-            email,
-            profile_img_url,
-          ]
-        )
+      const insertUserTypesQueryStr = format(
+        "INSERT INTO userTypes (type) VALUES %L",
+        userTypesData.map(({ type }) => [type])
       );
 
-      const clientsPromise = db.query(insertClientsQueryStr);
+      const userTypesPromise = db.query(insertUserTypesQueryStr);
 
-      return Promise.all([locationsPromise, categoriesPromise, clientsPromise]);
+      return Promise.all([locationsPromise, categoriesPromise, userTypesPromise]);
     })
     .then(() => {
-      const insertEntertainersQueryStr = format(
-        "INSERT INTO entertainers (username, password, category, location, entertainer_name, first_name, last_name, email, description, price, profile_img_url, show_photos_url, video_link) VALUES %L RETURNING *",
-        entertainersData.map(
+      const insertUsersQueryStr = format(
+        "INSERT INTO users (username, password, first_name, last_name, email, profile_img_url, user_type, category, location, entertainer_name, description, price) VALUES %L RETURNING *",
+        usersData.map(
           ({
             username,
             password,
-            category,
-            location,
-            entertainer_name,
             first_name,
             last_name,
             email,
-            description,
-            price,
             profile_img_url,
-            show_photos_url,
-            video_link,
+            user_type,
+            category,
+            location,
+            entertainer_name,
+            description,
+            price
           }) => [
             username,
             password,
-            category,
-            location,
-            entertainer_name,
             first_name,
             last_name,
             email,
-            description,
-            price,
             profile_img_url,
-            show_photos_url,
-            video_link,
+            user_type,
+            category,
+            location,
+            entertainer_name,
+            description,
+            price
           ]
         )
       );
-      return db.query(insertEntertainersQueryStr);
+      return db.query(insertUsersQueryStr);
     })
     .then(() => {
       const insertAvailabilityQueryStr = format(
@@ -206,7 +192,7 @@ const seed = ({
     })
     .then(() => {
       const insertBookingsQueryStr = format(
-        "INSERT INTO bookings (client_id, entertainer_id, booking_date, event_details, address) VALUES %L",
+        "INSERT INTO bookings (user_id, entertainer_id, booking_date, event_details, address) VALUES %L",
         bookingsData.map(
           ({
             client_id,

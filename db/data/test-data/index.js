@@ -1,5 +1,5 @@
-exports.clientsData = require('./clients')
-exports.entertainersData = require('./entertainers')
+exports.userTypesData = require('./userTypes')
+exports.usersData = require('./users')
 exports.categoriesData = require('./categories')
 exports.locationsData = require('./locations')
 exports.availabilityData = require('./availability')
