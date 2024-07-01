@@ -1,6 +1,5 @@
 const format = require("pg-format");
 const db = require("../connection");
-const messages = require("../data/test-data/messages");
 
 const seed = ({
   clientsData,
