@@ -1,5 +1,6 @@
 const format = require("pg-format");
 const db = require("../connection");
+const messages = require("../data/test-data/messages");
 
 const seed = ({
   clientsData,
@@ -7,7 +8,8 @@ const seed = ({
   availabilityData,
   categoriesData,
   locationsData,
-  bookingsData
+  bookingsData,
+  messagesData,
 }) => {
   return db
     .query(`DROP TABLE IF EXISTS availability`)
@@ -152,56 +154,102 @@ const seed = ({
 
       const clientsPromise = db.query(insertClientsQueryStr);
 
-
       return Promise.all([locationsPromise, categoriesPromise, clientsPromise]);
     })
     .then(() => {
-        const insertEntertainersQueryStr = format(
-            "INSERT INTO entertainers (username, password, category, location, entertainer_name, first_name, last_name, email, description, price, profile_img_url, show_photos_url, video_link) VALUES %L RETURNING *",
-            entertainersData.map(
-              ({
-                username,
-                password,
-                category,
-                location,
-                entertainer_name,
-                first_name,
-                last_name,
-                email,
-                description,
-                price,
-                profile_img_url,
-                show_photos_url,
-                video_link,
-              }) => [
-                username,
-                password,
-                category,
-                location,
-                entertainer_name,
-                first_name,
-                last_name,
-                email,
-                description,
-                price,
-                profile_img_url,
-                show_photos_url,
-                video_link,
-              ]
-            )
-          );
-          return db.query(insertEntertainersQueryStr)
+      const insertEntertainersQueryStr = format(
+        "INSERT INTO entertainers (username, password, category, location, entertainer_name, first_name, last_name, email, description, price, profile_img_url, show_photos_url, video_link) VALUES %L RETURNING *",
+        entertainersData.map(
+          ({
+            username,
+            password,
+            category,
+            location,
+            entertainer_name,
+            first_name,
+            last_name,
+            email,
+            description,
+            price,
+            profile_img_url,
+            show_photos_url,
+            video_link,
+          }) => [
+            username,
+            password,
+            category,
+            location,
+            entertainer_name,
+            first_name,
+            last_name,
+            email,
+            description,
+            price,
+            profile_img_url,
+            show_photos_url,
+            video_link,
+          ]
+        )
+      );
+      return db.query(insertEntertainersQueryStr);
     })
     .then(() => {
-        const insertAvailabilityQueryStr = format('INSERT INTO availability (entertainer_id, date, available) VALUES %L;', availabilityData.map(({entertainer_id, date, available}) => [entertainer_id, date, available]))
+      const insertAvailabilityQueryStr = format(
+        "INSERT INTO availability (entertainer_id, date, available) VALUES %L;",
+        availabilityData.map(({ entertainer_id, date, available }) => [
+          entertainer_id,
+          date,
+          available,
+        ])
+      );
 
-        return db.query(insertAvailabilityQueryStr)
+      return db.query(insertAvailabilityQueryStr);
     })
     .then(() => {
-        const insertBookingsQueryStr = format('INSERT INTO bookings (client_id, entertainer_id, booking_date, event_details, address) VALUES %L', bookingsData.map(({client_id, entertainer_id, booking_date, event_details, address}) => [client_id, entertainer_id, booking_date, event_details, address]))
-        
-        return db.query(insertBookingsQueryStr)
+      const insertBookingsQueryStr = format(
+        "INSERT INTO bookings (client_id, entertainer_id, booking_date, event_details, address) VALUES %L",
+        bookingsData.map(
+          ({
+            client_id,
+            entertainer_id,
+            booking_date,
+            event_details,
+            address,
+          }) => [
+            client_id,
+            entertainer_id,
+            booking_date,
+            event_details,
+            address,
+          ]
+        )
+      );
+      return db.query(insertBookingsQueryStr);
     })
+    .then(() => {
+      const insertMessagesQueryStr = format(
+        "INSERT INTO messages (sender_id, recipient_id, sender_type, recipient_type, message, created_at) VALUES %L",
+        messagesData.map(
+          ({
+            sender_id,
+            recipient_id,
+            sender_type,
+            recipient_type,
+            message,
+            created_at,
+          }) => [
+            sender_id,
+            recipient_id,
+            sender_type,
+            recipient_type,
+            message,
+            created_at,
+          ]
+        )
+      );
+
+      return db.query(insertMessagesQueryStr);
+    });
 };
 
-module.exports = seed
+module.exports = seed;
