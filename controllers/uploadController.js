@@ -25,11 +25,15 @@ const uploadFile = async (req, res) => {
     if (err) {
       return res.status(500).send(err);
     }
-
     const fileContent = fs.readFileSync(filePath);
+
+    // Access user information from req.user
+    const user = req.user;
+    const username = user.username;
+
     const params = {
       Bucket: BUCKET_NAME,
-      Key: `${Date.now().toString()}-${path.basename(filePath)}`,
+      Key: `${username}-${Date.now().toString()}-${path.basename(filePath)}`,
       Body: fileContent,
       ContentType: file.mimetype,
     };

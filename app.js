@@ -3,10 +3,14 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const uploadRoutes = require("./routes/uploadRoute");
+const authRoutes = require("./routes/authRoute");
 
 const app = express();
 
+app.use(express.json()); // To handle JSON requests
+
 app.use("/api", uploadRoutes);
+app.use("/api", authRoutes);
 
 module.exports = app;
 
