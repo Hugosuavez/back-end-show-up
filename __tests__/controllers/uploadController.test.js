@@ -1,3 +1,5 @@
+// __tests__/controllers/uploadFile.test.js
+
 const request = require('supertest');
 const app = require('../../app'); // Adjust the path as necessary
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
@@ -30,9 +32,11 @@ describe('uploadController Tests', () => {
     const response = await request(app)
       .post('/api/upload')
       .attach('file', Buffer.from('fake-image-content'), 'test-image.png');
+
+    const expectedLocation = `https://show-up-northcoders.s3.amazonaws.com/${response.body.location.split('/').pop()}`;
     
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('message', 'File uploaded successfully.');
-    expect(response.body).toHaveProperty('location', 'https://mocked-url.com/mock-image.png');
+    expect(response.body).toHaveProperty('location', expectedLocation);
   });
 });

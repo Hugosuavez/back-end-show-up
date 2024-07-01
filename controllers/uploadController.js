@@ -42,7 +42,7 @@ const uploadFile = async (req, res) => {
         .status(200)
         .send({
           message: "File uploaded successfully.",
-          location: data.Location,
+          location: `https://${BUCKET_NAME}.s3.amazonaws.com/${params.Key}`,
         });
     } catch (error) {
       fs.unlinkSync(filePath); // Clean up the local file on error
