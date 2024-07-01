@@ -54,7 +54,7 @@ const seed = ({
            first_name VARCHAR NOT NULL,
            last_name VARCHAR NOT NULL,
            email VARCHAR NOT NULL,
-           profile_img_url VARCHAR NOT NULL
+           profile_img_url VARCHAR
            ); 
             `);
     })
@@ -69,7 +69,7 @@ const seed = ({
             entertainer_name VARCHAR NOT NULL,
             first_name VARCHAR NOT NULL,
             last_name VARCHAR NOT NULL,
-            email VARCHAR NOT NULL
+            email VARCHAR NOT NULL,
             description VARCHAR NOT NULL,
             price INT NOT NULL,
             profile_img_url VARCHAR,
@@ -105,7 +105,7 @@ const seed = ({
             total_amount INT NOT NULL,
             date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
             payee INT NOT NULL REFERENCES clients(client_id),
-            recipient INT NOT NULL entertainers(entertainer_id)
+            recipient INT NOT NULL REFERENCES entertainers(entertainer_id)
             );`);
     })
     .then(() => {
@@ -248,6 +248,9 @@ const seed = ({
       );
 
       return db.query(insertMessagesQueryStr);
+    })
+    .catch((err) => {
+      console.error("Error seeding database", err);
     });
 };
 

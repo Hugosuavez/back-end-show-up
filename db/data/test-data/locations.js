@@ -1,8 +1,8 @@
 module.exports = [
-    {
-    location: 'London'
-    },
-    {
-    location: 'Oxford'
-    }
-    ]
+  {
+    location: "London",
+  },
+  {
+    location: "Oxford",
+  },
+];

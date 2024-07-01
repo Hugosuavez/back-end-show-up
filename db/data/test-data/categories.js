@@ -1,8 +1,8 @@
 module.exports = [
-    {
-        category: 'Juggler'
-    },
-    {
-        category: 'Violinist'
-    }
-]
+  {
+    category: "Juggler",
+  },
+  {
+    category: "Violinist",
+  },
+];
