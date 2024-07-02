@@ -9,6 +9,7 @@ const seed = ({
   locationsData,
   bookingsData,
   messagesData,
+  userMediaData
 }) => {
   return db
     .query(`DROP TABLE IF EXISTS availability`)
@@ -234,6 +235,11 @@ const seed = ({
       );
 
       return db.query(insertMessagesQueryStr);
+    })
+    .then(() => {
+      const insertUserMediaQueryStr = format("INSERT INTO userMedia (url, user_id, created_at) VALUES %L", userMediaData.map(({url, user_id, created_at}) => [url, user_id, created_at]))
+
+      return db.query(insertUserMediaQueryStr)
     })
     .catch((err) => {
       console.error("Error seeding database", err);

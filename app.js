@@ -1,5 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
+
+const {getEntertainers} = require('./controllers/entertainersControllers')
+
 dotenv.config();
 
 const uploadRoutes = require("./routes/uploadRoute");
@@ -11,6 +14,8 @@ app.use(express.json()); // To handle JSON requests
 
 app.use("/api", uploadRoutes);
 app.use("/api", authRoutes);
+
+app.get('/api/entertainers', getEntertainers)
 
 module.exports = app;
 

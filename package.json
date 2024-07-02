@@ -7,7 +7,9 @@
     "test": "jest",
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
-    "start": "node app.js"
+    "start": "node app.js",
+   
+    "playground": "psql -f psql-playground.sql > psql-text-playground.txt"
   },
   "keywords": [],
   "author": "",

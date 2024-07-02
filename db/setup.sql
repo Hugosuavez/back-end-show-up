@@ -1,5 +1,5 @@
 DROP DATABASE IF EXISTS show_up_dev;
-DROP DATABASE IF EXISTS show_up;
+DROP DATABASE IF EXISTS show_up_test;
 
 CREATE DATABASE show_up_dev;
-CREATE DATABASE show_up;
+CREATE DATABASE show_up_test;
