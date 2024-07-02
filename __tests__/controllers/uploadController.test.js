@@ -1,8 +1,6 @@
-// __tests__/controllers/uploadFile.test.js
-
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
-const app = require('../../app'); // Adjust the path as necessary
+const app = require('../../app'); 
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { mockClient } = require('aws-sdk-client-mock');
 
@@ -11,7 +9,7 @@ const s3Mock = mockClient(S3Client);
 
 // Mock user data and JWT secret
 const mockUser = { id: 1, username: 'testuser' };
-const secretKey = 'yourSecretKey'; // Ensure this matches your secret key in authController
+const secretKey = 'yourSecretKey'; // must match the secret key in authController
 
 // Generate a mock JWT for testing
 const generateMockJWT = () => {

@@ -1,8 +1,9 @@
-const { fetchLocations } = require('../models/locationsModels')
+const { fetchLocations } = require("../models/locationsModels");
 
 exports.getLocations = (req, res, next) => {
-    fetchLocations().then((location) => {
-        res.status(200).send({location})
+  fetchLocations()
+    .then((locations) => {
+      res.status(200).send(locations);
     })
-    .catch(next)   
-}
+    .catch(next);
+};
