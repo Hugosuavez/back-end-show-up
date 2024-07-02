@@ -3,7 +3,11 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const messageController = require("../../controllers/messageController");
 const { authenticateJWT } = require("../../controllers/authController");
-const { sendMessage, getMessages } = require("../../models/messageModel");
+const {
+  sendMessage,
+  getConversations,
+  getConversationMessages,
+} = require("../../models/messageModel");
 const { getUserByUsername } = require("../../models/usersModel");
 
 // Mock the model functions
@@ -14,7 +18,16 @@ const app = express();
 app.use(express.json());
 
 app.post("/api/messages", authenticateJWT, messageController.sendMessage);
-app.get("/api/messages", authenticateJWT, messageController.getMessages);
+app.get(
+  "/api/conversations",
+  authenticateJWT,
+  messageController.getConversations
+);
+app.get(
+  "/api/messages/:username",
+  authenticateJWT,
+  messageController.getConversationMessages
+);
 
 // Mock JWT secret key
 const secretKey = "yourSecretKey"; // must match the secret key in authController
@@ -112,8 +125,42 @@ describe("messageController Tests", () => {
     });
   });
 
-  describe("GET /api/messages", () => {
-    it("should return messages for the user", async () => {
+  describe("GET /api/conversations", () => {
+    it("should return a list of conversations for the user", async () => {
+      const mockConversations = [
+        {
+          user_id: 2,
+          username: "user2",
+          first_name: "First2",
+          last_name: "Last2",
+          email: "user2@example.com",
+        },
+        {
+          user_id: 3,
+          username: "user3",
+          first_name: "First3",
+          last_name: "Last3",
+          email: "user3@example.com",
+        },
+      ];
+      getConversations.mockResolvedValue(mockConversations);
+
+      const token = jwt.sign({ id: 1, username: "user1" }, secretKey, {
+        expiresIn: "1h",
+      });
+      const response = await request(app)
+        .get("/api/conversations")
+        .set("Authorization", token);
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(mockConversations);
+      expect(getConversations).toHaveBeenCalledWith(1);
+    });
+  });
+
+  describe("GET /api/messages/:username", () => {
+    it("should return conversation messages with a specific user", async () => {
+      const mockUser = { user_id: 2, username: "user2" };
       const mockMessages = [
         {
           message_id: 1,
@@ -130,13 +177,14 @@ describe("messageController Tests", () => {
           created_at: new Date(),
         },
       ];
-      getMessages.mockResolvedValue(mockMessages);
+      getUserByUsername.mockResolvedValue(mockUser);
+      getConversationMessages.mockResolvedValue(mockMessages);
 
       const token = jwt.sign({ id: 1, username: "user1" }, secretKey, {
         expiresIn: "1h",
       });
       const response = await request(app)
-        .get("/api/messages")
+        .get("/api/messages/user2")
         .set("Authorization", token);
 
       expect(response.status).toBe(200);
@@ -145,7 +193,23 @@ describe("messageController Tests", () => {
         created_at: msg.created_at.toISOString(),
       }));
       expect(response.body).toEqual(expectedMessages);
-      expect(getMessages).toHaveBeenCalledWith(1);
+      expect(getUserByUsername).toHaveBeenCalledWith("user2");
+      expect(getConversationMessages).toHaveBeenCalledWith(1, 2);
+    });
+
+    it("should return 404 if the user not found", async () => {
+      getUserByUsername.mockResolvedValue(null);
+
+      const token = jwt.sign({ id: 1, username: "user1" }, secretKey, {
+        expiresIn: "1h",
+      });
+      const response = await request(app)
+        .get("/api/messages/nonexistent_user")
+        .set("Authorization", token);
+
+      expect(response.status).toBe(404);
+      expect(response.body).toHaveProperty("error", "User not found");
+      expect(getUserByUsername).toHaveBeenCalledWith("nonexistent_user");
     });
   });
 });

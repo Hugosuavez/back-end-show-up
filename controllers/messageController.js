@@ -1,4 +1,8 @@
-const { sendMessage, getMessages } = require("../models/messageModel");
+const {
+  sendMessage,
+  getConversations,
+  getConversationMessages,
+} = require("../models/messageModel");
 const { getUserByUsername } = require("../models/usersModel");
 
 exports.sendMessage = async (req, res, next) => {
@@ -29,11 +33,29 @@ exports.sendMessage = async (req, res, next) => {
   }
 };
 
-exports.getMessages = async (req, res, next) => {
+exports.getConversations = async (req, res, next) => {
   const user_id = req.user.id;
 
   try {
-    const messages = await getMessages(user_id);
+    const conversations = await getConversations(user_id);
+    res.status(200).send(conversations);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getConversationMessages = async (req, res, next) => {
+  const user_id = req.user.id;
+  const { username } = req.params;
+
+  try {
+    const otherUser = await getUserByUsername(username);
+
+    if (!otherUser) {
+      return res.status(404).send({ error: "User not found" });
+    }
+
+    const messages = await getConversationMessages(user_id, otherUser.user_id);
     res.status(200).send(messages);
   } catch (err) {
     next(err);
