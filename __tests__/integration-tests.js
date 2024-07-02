@@ -39,6 +39,7 @@ describe('GET /api/entertainers', () => {
             })
         })
     })
+
     test('404: route not found', () => {
         return request(app)
         .get('/api/nonsense')
@@ -86,6 +87,45 @@ describe('GET /api/entertainers?location', () => {
     })
 })
 
+describe('GET /api/entertainers?category', () => {
+    test('200: returns entertainers in correct category', () => {
+        return request(app)
+        .get('/api/entertainers?category=Juggler')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.entertainers).toHaveLength(2)
+            body.entertainers.forEach((entertainer) => {
+                expect(entertainer).toMatchObject({
+                    username: expect.any(String),
+                    password: expect.any(String),
+                    first_name: expect.any(String),
+                    last_name: expect.any(String),
+                    email: expect.any(String),
+                    profile_img_url: expect.any(String),
+                    user_type: 'Entertainer',
+                    category: 'Juggler',
+                    location: expect.any(String),
+                    entertainer_name: expect.any(String),
+                    description: expect.any(String),
+                    price: expect.any(Number),
+                    url: expect.any(String),
+                    media_id: expect.any(Number)
+                })
+            })
+        })
+    })
+    test('404: invalid category', () => {
+        return request(app)
+        .get('/api/entertainers?category=weapon')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("404: Not Found")
+        })
+    })
+})
+
+
+
 describe('GET /api/entertainers/:user_id', () => {
     test('200: responds with correct entertainer object', () => {
         return request(app)
@@ -125,6 +165,38 @@ describe('GET /api/entertainers/:user_id', () => {
         .expect(400)
         .then(({body}) => {
             expect(body.msg).toBe('400: Bad Request')
+        })
+    })
+})
+
+describe('GET /locations', () => {
+    test('200: returns an array of location objects', () => {
+        return request(app)
+        .get('/api/locations')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.location).toHaveLength(2)
+            body.location.forEach((location) => {
+                expect(location).toMatchObject({
+                    location: expect.any(String)
+                })
+            })
+        })
+    })
+})
+
+describe('GET /categories', () => {
+    test('200: returns an array of category objects', () => {
+        return request(app)
+        .get('/api/categories')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.categories).toHaveLength(2)
+            body.categories.forEach((category) => {
+                expect(category).toMatchObject({
+                    category: expect.any(String)
+                })
+            })
         })
     })
 })

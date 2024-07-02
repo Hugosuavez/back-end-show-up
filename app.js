@@ -9,6 +9,8 @@ const {
 } = require("./controllers/entertainersControllers");
 const uploadRoutes = require("./routes/uploadRoute");
 const authRoutes = require("./routes/authRoute");
+const { getLocations } = require("./controllers/locationsControllers");
+const { getCategories } = require("./controllers/categoriesControllers");
 
 const app = express();
 
@@ -22,6 +24,9 @@ app.use("/api", authRoutes);
 
 app.get("/api/entertainers", getEntertainers);
 app.get("/api/entertainers/:user_id", getEntertainerById);
+
+app.get('/api/locations', getLocations)
+app.get('/api/categories', getCategories)
 
 //Error handling middleware
 app.use((err, req, res, next) => {

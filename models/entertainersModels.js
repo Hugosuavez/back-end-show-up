@@ -1,6 +1,6 @@
 const db = require('../db/connection')
 
-exports.fetchEntertainers = (location) => {
+exports.fetchEntertainers = (location, category) => {
    
     let queryString = `SELECT users.*, userMedia.url, userMedia.media_id FROM users JOIN userMedia ON users.user_id = userMedia.user_id WHERE user_type = 'Entertainer'`
 
@@ -9,6 +9,12 @@ exports.fetchEntertainers = (location) => {
     if(location){
         queryString += ` AND location = $1`
         queryValues.push(location)
+    }
+
+    if(category){
+        if(location){queryString += ` AND category = $2`}
+        else{queryString += ` AND category = $1`}
+        queryValues.push(category)
     }
    
     return db.query(queryString, queryValues).then((result) => {
