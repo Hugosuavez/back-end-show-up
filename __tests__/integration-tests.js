@@ -124,7 +124,42 @@ describe('GET /api/entertainers?category', () => {
     })
 })
 
-
+describe('GET /api/entertainers?date', () => {
+    test('200: returns entertainers available on that date', () => {
+        return request(app)
+        .get('/api/entertainers?date=2024-07-01')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.entertainers).toHaveLength(3)
+            body.entertainers.forEach((entertainer) => {
+                expect(entertainer).toMatchObject({
+                    username: expect.any(String),
+                    password: expect.any(String),
+                    first_name: expect.any(String),
+                    last_name: expect.any(String),
+                    email: expect.any(String),
+                    profile_img_url: expect.any(String),
+                    user_type: 'Entertainer',
+                    category: expect.any(String),
+                    location: expect.any(String),
+                    entertainer_name: expect.any(String),
+                    description: expect.any(String),
+                    price: expect.any(Number),
+                    url: expect.any(String),
+                    media_id: expect.any(Number)
+                })
+            })
+        })
+    })
+    test('404: invalid date', () => {
+        return request(app)
+        .get('/api/entertainers?date=chips')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("404: Not Found")
+        })
+    })
+})
 
 describe('GET /api/entertainers/:user_id', () => {
     test('200: responds with correct entertainer object', () => {
