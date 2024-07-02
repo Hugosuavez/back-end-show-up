@@ -9,6 +9,7 @@ const {
 } = require("./controllers/entertainersControllers");
 const uploadRoutes = require("./routes/uploadRoute");
 const authRoutes = require("./routes/authRoute");
+const registrationRoutes = require("./routes/registrationRoute");
 const { getLocations } = require("./controllers/locationsControllers");
 const { getCategories } = require("./controllers/categoriesControllers");
 
@@ -21,6 +22,7 @@ app.use(cors());
 //Routes
 app.use("/api", uploadRoutes);
 app.use("/api", authRoutes);
+app.use("/api", registrationRoutes);
 
 app.get("/api/entertainers", getEntertainers);
 app.get("/api/entertainers/:user_id", getEntertainerById);
