@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 
 const {getEntertainers, getEntertainerById} = require('./controllers/entertainersControllers')
 const { getLocations } = require("./controllers/locationsControllers");
+const { getCategories } = require("./controllers/categoriesControllers");
 
 dotenv.config();
 
@@ -22,6 +23,8 @@ app.get('/api/entertainers', getEntertainers)
 app.get('/api/entertainers/:user_id', getEntertainerById)
 
 app.get('/api/locations', getLocations)
+
+app.get('/api/categories', getCategories)
 
 app.use((err, req, res, next) => {
   if(err.msg){

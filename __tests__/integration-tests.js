@@ -144,3 +144,19 @@ describe('GET /locations', () => {
         })
     })
 })
+
+describe('GET /categories', () => {
+    test('200: returns an array of location objects', () => {
+        return request(app)
+        .get('/api/categories')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.categories).toHaveLength(2)
+            body.categories.forEach((category) => {
+                expect(category).toMatchObject({
+                    category: expect.any(String)
+                })
+            })
+        })
+    })
+})
