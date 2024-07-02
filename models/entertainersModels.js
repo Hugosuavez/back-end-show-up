@@ -1,22 +1,35 @@
 const db = require('../db/connection')
 
-exports.fetchEntertainers = (location, category) => {
+exports.fetchEntertainers = (location, category, date) => {
    
-    let queryString = `SELECT users.*, userMedia.url, userMedia.media_id FROM users JOIN userMedia ON users.user_id = userMedia.user_id WHERE user_type = 'Entertainer'`
+    let queryString = `SELECT users.*, userMedia.url, userMedia.media_id FROM users JOIN userMedia ON users.user_id = userMedia.user_id`
 
     let queryValues = []
 
+    const correctDateRegex = /^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/
+
+    if(date){
+        if(correctDateRegex.test(date)){
+        queryString += ` JOIN availability ON users.user_id = availability.entertainer_id AND date = $1 AND available = true`
+        queryValues.push(date)}
+        else{return Promise.reject({status: 404, msg: '404: Not Found'})}
+    }
+    
     if(location){
-        queryString += ` AND location = $1`
+        if(date){` AND location = $2`}
+        else{queryString += ` AND location = $1`}
         queryValues.push(location)
     }
-
+    
     if(category){
-        if(location){queryString += ` AND category = $2`}
+        if(location && date){queryString += ` AND category = $3`}
+        else if(location || date){queryString += ` AND category = $2`}
         else{queryString += ` AND category = $1`}
         queryValues.push(category)
     }
-   
+
+    queryString += ` WHERE user_type = 'Entertainer'`
+
     return db.query(queryString, queryValues).then((result) => {
         return result.rows
     })
