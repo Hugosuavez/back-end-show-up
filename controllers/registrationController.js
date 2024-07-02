@@ -27,6 +27,15 @@ exports.registerUser = async (req, res, next) => {
     return res.status(400).send({ error: "Missing required fields" });
   }
 
+  // Validation for "Entertainer"
+  if (user_type === "Entertainer") {
+    if (!category || !location || !entertainer_name || price == null) {
+      return res
+        .status(400)
+        .send({ error: "Missing required fields for Entertainer" });
+    }
+  }
+
   try {
     // Check if username is already taken
     const usernameTaken = await isUsernameTaken(username);
