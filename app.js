@@ -2,11 +2,13 @@ const express = require("express");
 const dotenv = require("dotenv");
 
 const {getEntertainers, getEntertainerById} = require('./controllers/entertainersControllers')
+const { getLocations } = require("./controllers/locationsControllers");
 
 dotenv.config();
 
 const uploadRoutes = require("./routes/uploadRoute");
 const authRoutes = require("./routes/authRoute");
+
 
 const app = express();
 
@@ -18,6 +20,8 @@ app.use("/api", authRoutes);
 app.get('/api/entertainers', getEntertainers)
 
 app.get('/api/entertainers/:user_id', getEntertainerById)
+
+app.get('/api/locations', getLocations)
 
 app.use((err, req, res, next) => {
   if(err.msg){

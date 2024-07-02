@@ -128,3 +128,19 @@ describe('GET /api/entertainers/:user_id', () => {
         })
     })
 })
+
+describe('GET /locations', () => {
+    test('200: returns an array of location objects', () => {
+        return request(app)
+        .get('/api/locations')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.location).toHaveLength(2)
+            body.location.forEach((location) => {
+                expect(location).toMatchObject({
+                    location: expect.any(String)
+                })
+            })
+        })
+    })
+})
