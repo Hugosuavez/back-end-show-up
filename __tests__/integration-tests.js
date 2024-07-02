@@ -210,8 +210,8 @@ describe('GET /locations', () => {
         .get('/api/locations')
         .expect(200)
         .then(({body}) => {
-            expect(body.location).toHaveLength(2)
-            body.location.forEach((location) => {
+            expect(body).toHaveLength(2)
+            body.forEach((location) => {
                 expect(location).toMatchObject({
                     location: expect.any(String)
                 })
@@ -226,8 +226,9 @@ describe('GET /categories', () => {
         .get('/api/categories')
         .expect(200)
         .then(({body}) => {
-            expect(body.categories).toHaveLength(2)
-            body.categories.forEach((category) => {
+            console.log(body)
+            expect(body).toHaveLength(2)
+            body.forEach((category) => {
                 expect(category).toMatchObject({
                     category: expect.any(String)
                 })
