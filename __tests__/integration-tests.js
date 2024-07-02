@@ -39,4 +39,12 @@ describe('GET /api/entertainers', () => {
             })
         })
     })
+    test('404: route not found', () => {
+        return request(app)
+        .get('/api/nonsense')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe('404: route not found')
+        })
+    })
 })

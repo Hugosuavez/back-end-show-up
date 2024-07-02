@@ -17,6 +17,11 @@ app.use("/api", authRoutes);
 
 app.get('/api/entertainers', getEntertainers)
 
+app.all('*', (req, res) => {
+  res.status(404).send({msg: "404: route not found"})
+    });
+
+
 module.exports = app;
 
 if (require.main === module) {
