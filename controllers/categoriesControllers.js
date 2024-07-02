@@ -1,9 +1,11 @@
-const { fetchCategories } = require("../models/categoriesModels")
-
+const { fetchCategories } = require("../models/categoriesModels");
 
 exports.getCategories = (req, res, next) => {
-    fetchCategories().then((categories) => {
-        return res.status(200).send({categories})
+  fetchCategories()
+    .then((categories) => {
+      return res.status(200).send(categories);
     })
-    .catch(next)
-}
+    .catch((err) => {
+      next(err); // pass the error to the error-handling middleware
+    });
+};
