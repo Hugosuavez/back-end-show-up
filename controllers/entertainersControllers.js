@@ -1,8 +1,15 @@
 const {fetchEntertainers, fetchEntertainerById} = require('../models/entertainersModels')
+const { checkLocationIsValid } = require('../models/locationsModels')
 
 exports.getEntertainers = (req, res, next) => {
+    const { location } = req.query
 
-    fetchEntertainers().then((entertainers) => {
+    const promises = [fetchEntertainers(location)]
+
+    if(location){promises.push(checkLocationIsValid(location))}
+
+    Promise.all(promises).then((resolvedPromises) => {
+        const entertainers = resolvedPromises[0]
         res.status(200).send({entertainers})
     })
     .catch(next)
