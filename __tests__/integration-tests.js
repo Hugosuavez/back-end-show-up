@@ -27,7 +27,7 @@ describe('GET /api/entertainers', () => {
                     last_name: expect.any(String),
                     email: expect.any(String),
                     profile_img_url: expect.any(String),
-                    user_type: expect.any(String),
+                    user_type: 'Entertainer',
                     category: expect.any(String),
                     location: expect.any(String),
                     entertainer_name: expect.any(String),
@@ -45,6 +45,49 @@ describe('GET /api/entertainers', () => {
         .expect(404)
         .then(({body}) => {
             expect(body.msg).toBe('404: route not found')
+        })
+    })
+})
+
+describe('GET /api/entertainers/:user_id', () => {
+    test('200: responds with correct entertainer object', () => {
+        return request(app)
+        .get('/api/entertainers/2')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.entertainer).toMatchObject({
+                user_id: 2,
+                username: expect.any(String),
+                password: expect.any(String),
+                first_name: expect.any(String),
+                last_name: expect.any(String),
+                email: expect.any(String),
+                profile_img_url: expect.any(String),
+                user_type: 'Entertainer',
+                category: expect.any(String),
+                location: expect.any(String),
+                entertainer_name: expect.any(String),
+                description: expect.any(String),
+                price: expect.any(Number),
+                url: expect.any(String),
+                media_id: expect.any(Number)
+            })
+        })
+    })
+    test('404: Not Found', () => {
+        return request(app)
+        .get('/api/entertainers/9999')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("404: Not Found")
+        })
+    })
+    test('400: Bad Request', () => {
+        return request(app)
+        .get('/api/entertainers/biro')
+        .expect(400)
+        .then(({body}) => {
+            expect(body.msg).toBe('400: Bad Request')
         })
     })
 })
