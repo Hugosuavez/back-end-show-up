@@ -226,7 +226,6 @@ describe('GET /categories', () => {
         .get('/api/categories')
         .expect(200)
         .then(({body}) => {
-            console.log(body)
             expect(body).toHaveLength(2)
             body.forEach((category) => {
                 expect(category).toMatchObject({
