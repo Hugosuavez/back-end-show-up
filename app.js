@@ -36,7 +36,7 @@ app.use((err, req, res, next) => {
     res.status(400).send({ msg: "400: Bad Request" });
   } else {
     console.error(err); // Log unexpected errors
-    res.status(500).send({ msg: "500: Internal Server Error" });
+    res.status(500).send({ msg: err.message });
   }
 });
 
