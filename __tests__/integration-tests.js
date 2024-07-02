@@ -49,6 +49,43 @@ describe('GET /api/entertainers', () => {
     })
 })
 
+describe('GET /api/entertainers?location', () => {
+    test('200: returns entertainers in correct location', () => {
+        return request(app)
+        .get('/api/entertainers?location=London')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.entertainers).toHaveLength(3)
+            body.entertainers.forEach((entertainer) => {
+                expect(entertainer).toMatchObject({
+                    username: expect.any(String),
+                    password: expect.any(String),
+                    first_name: expect.any(String),
+                    last_name: expect.any(String),
+                    email: expect.any(String),
+                    profile_img_url: expect.any(String),
+                    user_type: 'Entertainer',
+                    category: expect.any(String),
+                    location: 'London',
+                    entertainer_name: expect.any(String),
+                    description: expect.any(String),
+                    price: expect.any(Number),
+                    url: expect.any(String),
+                    media_id: expect.any(Number)
+                })
+            })
+        })
+    })
+    test('404: invalid location', () => {
+        return request(app)
+        .get('/api/entertainers?location=lanchesterpool')
+        .expect(404)
+        .then(({body}) => {
+            expect(body.msg).toBe("404: Not Found")
+        })
+    })
+})
+
 describe('GET /api/entertainers/:user_id', () => {
     test('200: responds with correct entertainer object', () => {
         return request(app)
