@@ -221,6 +221,7 @@ const seed = ({
             sender_type,
             recipient_type,
             message,
+            booking_id,
             created_at,
           }) => [
             sender_id,
@@ -228,6 +229,7 @@ const seed = ({
             sender_type,
             recipient_type,
             message,
+            booking_id,
             created_at,
           ]
         )
