@@ -86,10 +86,8 @@ const seed = ({
     .then(() => {
       return db.query(`CREATE TABLE messages (
             message_id SERIAL PRIMARY KEY,
-            sender_id INT NOT NULL,
-            recipient_id INT NOT NULL,
-            sender_type VARCHAR NOT NULL,
-            recipient_type VARCHAR NOT NULL,
+            sender_id INT NOT NULL REFERENCES users(user_id),
+            recipient_id INT NOT NULL REFERENCES users(user_id),
             message TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );`);
@@ -214,20 +212,16 @@ const seed = ({
     })
     .then(() => {
       const insertMessagesQueryStr = format(
-        "INSERT INTO messages (sender_id, recipient_id, sender_type, recipient_type, message, created_at) VALUES %L",
+        "INSERT INTO messages (sender_id, recipient_id, message, created_at) VALUES %L",
         messagesData.map(
           ({
             sender_id,
             recipient_id,
-            sender_type,
-            recipient_type,
             message,
             created_at,
           }) => [
             sender_id,
             recipient_id,
-            sender_type,
-            recipient_type,
             message,
             created_at,
           ]

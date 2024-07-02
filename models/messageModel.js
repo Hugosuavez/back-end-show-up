@@ -1,20 +1,21 @@
 const db = require("../db/connection");
 
-exports.fetchAllMessages = () => {
+exports.sendMessage = (sender_id, recipient_id, message) => {
+  const query = `
+    INSERT INTO messages (sender_id, recipient_id, message)
+    VALUES ($1, $2, $3)
+    RETURNING *;
+  `;
   return db
-    .query(`SELECT message_id, sender_id, recipient_id, sender_type, recipient_type, message, created_at FROM messages;`)
-    .then(({ rows }) => {
-      return rows;
-    });
+    .query(query, [sender_id, recipient_id, message])
+    .then((result) => result.rows[0]);
 };
 
-exports.fetchMessageById = (messageId) => {
-  return db
-    .query(`SELECT message_id, sender_id, recipient_id, sender_type, recipient_type, message, created_at FROM messages WHERE message_id = $1;`, [messageId])
-    .then(({ rows }) => {
-      if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Message not found" });
-      }
-      return rows[0];
-    });
+exports.getMessages = (user_id) => {
+  const query = `
+    SELECT * FROM messages
+    WHERE sender_id = $1 OR recipient_id = $1
+    ORDER BY created_at DESC;
+  `;
+  return db.query(query, [user_id]).then((result) => result.rows);
 };
