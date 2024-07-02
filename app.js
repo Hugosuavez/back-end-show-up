@@ -1,5 +1,8 @@
 const express = require("express");
 const dotenv = require("dotenv");
+
+const {getEntertainers} = require('./controllers/entertainersControllers')
+
 dotenv.config();
 
 const uploadRoutes = require("./routes/uploadRoute");
@@ -11,6 +14,13 @@ app.use(express.json()); // To handle JSON requests
 
 app.use("/api", uploadRoutes);
 app.use("/api", authRoutes);
+
+app.get('/api/entertainers', getEntertainers)
+
+app.all('*', (req, res) => {
+  res.status(404).send({msg: "404: route not found"})
+    });
+
 
 module.exports = app;
 
