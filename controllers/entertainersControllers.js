@@ -1,13 +1,15 @@
+const { checkCategoryIsValid } = require('../models/categoriesModels')
 const {fetchEntertainers, fetchEntertainerById} = require('../models/entertainersModels')
 const { checkLocationIsValid } = require('../models/locationsModels')
 
 exports.getEntertainers = (req, res, next) => {
-    const { location } = req.query
+    const { location, category } = req.query
 
-    const promises = [fetchEntertainers(location)]
+    const promises = [fetchEntertainers(location, category)]
 
     if(location){promises.push(checkLocationIsValid(location))}
-
+    if(category){promises.push(checkCategoryIsValid(category))}
+    
     Promise.all(promises).then((resolvedPromises) => {
         const entertainers = resolvedPromises[0]
         res.status(200).send({entertainers})
