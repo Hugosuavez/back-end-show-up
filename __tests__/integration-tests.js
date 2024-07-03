@@ -308,3 +308,13 @@ describe('GET /categories', () => {
     })
 })
 
+describe('GET /api', () => {
+    test('200: responds with an object containing descriptions of all other endpoints', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.endpoints).toEqual(endpointsData)
+        })
+    })
+})

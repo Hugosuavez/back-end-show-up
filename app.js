@@ -36,6 +36,8 @@ app.get('/api/locations', getLocations)
 app.get('/api/categories', getCategories)
 
 
+app.get('/api', getEndpoints)
+
 //Error handling middleware
 app.use((err, req, res, next) => {
   if (err.msg) {
