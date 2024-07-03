@@ -2,6 +2,7 @@ const { checkCategoryIsValid } = require("../models/categoriesModels");
 const {
   fetchEntertainers,
   fetchEntertainerById,
+  fetchUserMediaByUserId
 } = require("../models/entertainersModels");
 const { checkLocationIsValid } = require("../models/locationsModels");
 
@@ -30,10 +31,12 @@ exports.getEntertainers = (req, res, next) => {
 
 exports.getEntertainerById = (req, res, next) => {
   const { user_id } = req.params;
-  fetchEntertainerById(user_id)
-    .then((entertainer) => {
+
+  Promise.all([fetchEntertainerById(user_id), fetchUserMediaByUserId(user_id)])
+    .then(([entertainer, media]) => {
       if (entertainer) {
         const { password, ...entertainerWithoutPassword } = entertainer;
+        entertainerWithoutPassword.media = media;
         res.status(200).send({ entertainer: entertainerWithoutPassword });
       } else {
         res.status(404).send({ error: "Entertainer not found" });

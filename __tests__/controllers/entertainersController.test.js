@@ -4,7 +4,10 @@ const bodyParser = require("body-parser");
 const {
   getEntertainerById,
 } = require("../../controllers/entertainersControllers");
-const { fetchEntertainerById } = require("../../models/entertainersModels");
+const {
+  fetchEntertainerById,
+  fetchUserMediaByUserId,
+} = require("../../models/entertainersModels");
 
 jest.mock("../../models/entertainersModels");
 
@@ -17,7 +20,7 @@ describe("GET /api/entertainers/:user_id", () => {
     jest.resetAllMocks();
   });
 
-  test("200: responds with correct entertainer object without password", async () => {
+  test("200: responds with correct entertainer object without password and includes media", async () => {
     const mockEntertainer = {
       user_id: 1,
       username: "j_depp",
@@ -35,7 +38,13 @@ describe("GET /api/entertainers/:user_id", () => {
       created_at: "2024-07-03T19:35:37.535Z",
     };
 
+    const mockMedia = [
+      { url: "https://example.com/media1.jpg" },
+      { url: "https://example.com/media2.jpg" },
+    ];
+
     fetchEntertainerById.mockResolvedValue(mockEntertainer);
+    fetchUserMediaByUserId.mockResolvedValue(mockMedia);
 
     const response = await request(app).get("/api/entertainers/1").expect(200);
 
@@ -53,6 +62,7 @@ describe("GET /api/entertainers/:user_id", () => {
       description: "A master of balance and coordination...",
       price: 20,
       created_at: "2024-07-03T19:35:37.535Z",
+      media: mockMedia,
     });
     expect(response.body.entertainer).not.toHaveProperty("password");
   });

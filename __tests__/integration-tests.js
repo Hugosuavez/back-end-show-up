@@ -160,11 +160,11 @@ describe("GET /api/entertainers?date", () => {
 describe("GET /api/entertainers/:user_id", () => {
   test("200: responds with correct entertainer object", () => {
     return request(app)
-      .get("/api/entertainers/2")
+      .get("/api/entertainers/1")
       .expect(200)
       .then(({ body }) => {
         expect(body.entertainer).toMatchObject({
-          user_id: 2,
+          user_id: 1,
           username: expect.any(String),
           first_name: expect.any(String),
           last_name: expect.any(String),
@@ -177,6 +177,11 @@ describe("GET /api/entertainers/:user_id", () => {
           entertainer_name: expect.any(String),
           description: expect.any(String),
           price: expect.any(Number),
+          media: expect.any(Array)
+        });
+        expect(body.entertainer.media).toHaveLength(2);
+        expect(body.entertainer.media[0]).toMatchObject({
+          url: expect.any(String)
         });
       });
   });
