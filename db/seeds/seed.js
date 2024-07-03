@@ -99,7 +99,7 @@ const seed = ({
             booking_id SERIAL PRIMARY KEY,
             user_id INT NOT NULL REFERENCES users(user_id),
             entertainer_id INT NOT NULL REFERENCES users(user_id),
-            booking_date DATE NOT NULL,
+            booking_date TIMESTAMPTZ NOT NULL,
             event_details VARCHAR NOT NULL,
             address VARCHAR NOT NULL
             );`);
