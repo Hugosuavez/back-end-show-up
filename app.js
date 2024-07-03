@@ -7,10 +7,6 @@ const { postBookings } = require('./controllers/bookingsControllers')
 
 dotenv.config();
 
-const {
-  getEntertainers,
-  getEntertainerById,
-} = require("./controllers/entertainersControllers");
 const uploadRoutes = require("./routes/uploadRoute");
 const authRoutes = require("./routes/authRoute");
 const registrationRoutes = require("./routes/registrationRoute");
