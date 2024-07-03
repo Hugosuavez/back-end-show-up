@@ -13,6 +13,8 @@ const registrationRoutes = require("./routes/registrationRoute");
 const usersRoute = require("./routes/usersRoute");
 const { getLocations } = require("./controllers/locationsControllers");
 const { getCategories } = require("./controllers/categoriesControllers");
+const { getEndpoints }  = require("./controllers/endpointsControllers")
+
 
 const app = express();
 
