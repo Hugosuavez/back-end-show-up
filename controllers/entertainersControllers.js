@@ -6,27 +6,32 @@ const {
 } = require("../models/entertainersModels");
 const { checkLocationIsValid } = require("../models/locationsModels");
 
-exports.getEntertainers = (req, res, next) => {
-  const { location, category, date } = req.query;
+exports.getEntertainers = async (req, res, next) => {
+  try {
+    const { location, category, date } = req.query;
 
-  const promises = [fetchEntertainers(location, category, date)];
+    const promises = [fetchEntertainers(location, category, date)];
 
-  if (location) {
-    promises.push(checkLocationIsValid(location));
+    if (location) {
+      promises.push(checkLocationIsValid(location));
+    }
+    if (category) {
+      promises.push(checkCategoryIsValid(category));
+    }
+
+    const resolvedPromises = await Promise.all(promises);
+    const entertainers = resolvedPromises[0];
+
+    const entertainersWithMedia = await Promise.all(entertainers.map(async (user) => {
+      const { password, ...userWithoutPassword } = user;
+      const media = await fetchUserMediaByUserId(user.user_id);
+      return { ...userWithoutPassword, media };
+    }));
+
+    res.status(200).send({ entertainers: entertainersWithMedia });
+  } catch (err) {
+    next(err);
   }
-  if (category) {
-    promises.push(checkCategoryIsValid(category));
-  }
-
-  Promise.all(promises)
-    .then((resolvedPromises) => {
-      const entertainers = resolvedPromises[0].map((user) => {
-        const { password, ...userWithoutPassword } = user;
-        return userWithoutPassword;
-      });
-      res.status(200).send({ entertainers });
-    })
-    .catch(next);
 };
 
 exports.getEntertainerById = (req, res, next) => {

@@ -223,6 +223,7 @@ describe("GET /api/entertainers", () => {
             entertainer_name: expect.any(String),
             description: expect.any(String),
             price: expect.any(Number),
+            media: expect.any(Array)
           });
           expect(entertainer).not.toHaveProperty("password");
         });
@@ -259,6 +260,7 @@ describe("GET /api/entertainers?location", () => {
             entertainer_name: expect.any(String),
             description: expect.any(String),
             price: expect.any(Number),
+            media: expect.any(Array)
           });
           expect(entertainer).not.toHaveProperty("password");
         });
@@ -294,6 +296,7 @@ describe("GET /api/entertainers?category", () => {
             entertainer_name: expect.any(String),
             description: expect.any(String),
             price: expect.any(Number),
+            media: expect.any(Array)
           });
           expect(entertainer).not.toHaveProperty("password");
         });
@@ -329,6 +332,7 @@ describe("GET /api/entertainers?date", () => {
             entertainer_name: expect.any(String),
             description: expect.any(String),
             price: expect.any(Number),
+            media: expect.any(Array)
           });
           expect(entertainer).not.toHaveProperty("password");
         });
@@ -363,6 +367,7 @@ describe("GET /api/entertainers/:user_id", () => {
           entertainer_name: expect.any(String),
           description: expect.any(String),
           price: expect.any(Number),
+          media: expect.any(Array)
         });
         expect(body.entertainer).not.toHaveProperty("password");
       });
