@@ -87,7 +87,7 @@ describe("authController Tests", () => {
 
     it("should return user data if a valid token is provided", async () => {
       const token = jwt.sign({ id: 1, username: "user1" }, secretKey, {
-        expiresIn: "1h",
+        expiresIn: "24h",
       });
       const response = await request(app)
         .get("/api/protected")
