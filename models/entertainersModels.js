@@ -2,7 +2,7 @@ const db = require('../db/connection')
 
 exports.fetchEntertainers = (location, category, date) => {
    
-    let queryString = `SELECT users.*, userMedia.url, userMedia.media_id FROM users JOIN userMedia ON users.user_id = userMedia.user_id`
+    let queryString = `SELECT users.user_id, users.username, users.first_name, users.last_name, users.email, users.profile_img_url, users.user_type, users.category, users.location, users.entertainer_name, users.description, users.price, userMedia.url, userMedia.media_id FROM users JOIN userMedia ON users.user_id = userMedia.user_id`
 
     let queryValues = []
 
@@ -36,11 +36,26 @@ exports.fetchEntertainers = (location, category, date) => {
 }
 
 exports.fetchEntertainerById = (user_id) => {
-return db.query(`SELECT users.*, userMedia.url, userMedia.media_id FROM users JOIN userMedia ON users.user_id = userMedia.user_id WHERE user_type = 'Entertainer' AND users.user_id = $1;`, [user_id]).then((result) => {
-    
-    if(result.rows.length === 0){
+
+    const userPromise =  db.query(`SELECT users.user_id, users.username, users.first_name, users.last_name, users.email, users.profile_img_url, users.user_type, users.category, users.location, users.entertainer_name, users.description, users.price FROM users WHERE user_type = 'Entertainer' AND users.user_id = $1;`, [user_id])
+    const urlPromise = db.query(`SELECT url FROM userMedia WHERE user_id = $1`, [user_id])
+   
+   return Promise.all([userPromise, urlPromise])
+
+.then((resolvedPromises) => {
+    if(resolvedPromises[0].rows.length === 0){
         return Promise.reject({status: 404, msg: '404: Not Found'})
     }
-    return result.rows[0]
+    
+    const user = resolvedPromises[0].rows[0]
+    user.urls = []
+    const images = resolvedPromises[1].rows
+
+    images.forEach((image) => {
+        user.urls.push(image.url)
+    })
+    
+    
+    return user
 })
 }

@@ -47,7 +47,7 @@ app.use((err, req, res, next) => {
   } else if (err.code === "22P02") {
     res.status(400).send({ msg: "400: Bad Request" });
   } else {
-    console.error(err); // Log unexpected errors
+    console.log(err); // Log unexpected errors
     res.status(500).send({ msg: err.message });
   }
 });

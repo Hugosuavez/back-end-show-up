@@ -23,7 +23,6 @@ describe('GET /api/entertainers', () => {
             body.entertainers.forEach((user) => {
                 expect(user).toMatchObject({
                     username: expect.any(String),
-                    password: expect.any(String),
                     first_name: expect.any(String),
                     last_name: expect.any(String),
                     email: expect.any(String),
@@ -61,7 +60,6 @@ describe('GET /api/entertainers?location', () => {
             body.entertainers.forEach((entertainer) => {
                 expect(entertainer).toMatchObject({
                     username: expect.any(String),
-                    password: expect.any(String),
                     first_name: expect.any(String),
                     last_name: expect.any(String),
                     email: expect.any(String),
@@ -98,7 +96,6 @@ describe('GET /api/entertainers?category', () => {
             body.entertainers.forEach((entertainer) => {
                 expect(entertainer).toMatchObject({
                     username: expect.any(String),
-                    password: expect.any(String),
                     first_name: expect.any(String),
                     last_name: expect.any(String),
                     email: expect.any(String),
@@ -135,7 +132,6 @@ describe('GET /api/entertainers?date', () => {
             body.entertainers.forEach((entertainer) => {
                 expect(entertainer).toMatchObject({
                     username: expect.any(String),
-                    password: expect.any(String),
                     first_name: expect.any(String),
                     last_name: expect.any(String),
                     email: expect.any(String),
@@ -171,19 +167,18 @@ describe('GET /api/entertainers/:user_id', () => {
             expect(body.entertainer).toMatchObject({
                 user_id: 2,
                 username: expect.any(String),
-                password: expect.any(String),
                 first_name: expect.any(String),
                 last_name: expect.any(String),
                 email: expect.any(String),
                 profile_img_url: expect.any(String),
+                urls: expect.any(Array),
                 user_type: 'Entertainer',
                 category: expect.any(String),
                 location: expect.any(String),
                 entertainer_name: expect.any(String),
                 description: expect.any(String),
                 price: expect.any(Number),
-                url: expect.any(String),
-                media_id: expect.any(Number)
+               
             })
         })
     })
