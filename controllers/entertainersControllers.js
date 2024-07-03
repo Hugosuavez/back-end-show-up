@@ -2,36 +2,44 @@ const { checkCategoryIsValid } = require("../models/categoriesModels");
 const {
   fetchEntertainers,
   fetchEntertainerById,
+  fetchUserMediaByUserId
 } = require("../models/entertainersModels");
 const { checkLocationIsValid } = require("../models/locationsModels");
 
-exports.getEntertainers = (req, res, next) => {
-  const { location, category, date } = req.query;
+exports.getEntertainers = async (req, res, next) => {
+  try {
+    const { location, category, date } = req.query;
 
-  const promises = [fetchEntertainers(location, category, date)];
+    const promises = [fetchEntertainers(location, category, date)];
 
-  if (location) {
-    promises.push(checkLocationIsValid(location));
+    if (location) {
+      promises.push(checkLocationIsValid(location));
+    }
+    if (category) {
+      promises.push(checkCategoryIsValid(category));
+    }
+
+    const resolvedPromises = await Promise.all(promises);
+    const entertainers = resolvedPromises[0];
+
+    const entertainersWithMedia = await Promise.all(entertainers.map(async (user) => {
+      const { password, ...userWithoutPassword } = user;
+      const mediaObjects = await fetchUserMediaByUserId(user.user_id);
+      const media = mediaObjects.map(mediaObj => mediaObj.url);
+      return { ...userWithoutPassword, media };
+    }));
+
+    res.status(200).send({ entertainers: entertainersWithMedia });
+  } catch (err) {
+    next(err);
   }
-  if (category) {
-    promises.push(checkCategoryIsValid(category));
-  }
-
-  Promise.all(promises)
-    .then((resolvedPromises) => {
-      const entertainers = resolvedPromises[0].map((user) => {
-        const { password, ...userWithoutPassword } = user;
-        return userWithoutPassword;
-      });
-      res.status(200).send({ entertainers });
-    })
-    .catch(next);
 };
 
 exports.getEntertainerById = (req, res, next) => {
   const { user_id } = req.params;
-  fetchEntertainerById(user_id)
-    .then((entertainer) => {
+
+  Promise.all([fetchEntertainerById(user_id)])
+    .then(([entertainer]) => {
       if (entertainer) {
         const { password, ...entertainerWithoutPassword } = entertainer;
         res.status(200).send({ entertainer: entertainerWithoutPassword });

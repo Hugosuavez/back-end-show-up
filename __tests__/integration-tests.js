@@ -160,24 +160,25 @@ describe("GET /api/entertainers?date", () => {
 describe("GET /api/entertainers/:user_id", () => {
   test("200: responds with correct entertainer object", () => {
     return request(app)
-      .get("/api/entertainers/2")
+      .get("/api/entertainers/1")
       .expect(200)
       .then(({ body }) => {
         expect(body.entertainer).toMatchObject({
-          user_id: 2,
+          user_id: 1,
           username: expect.any(String),
           first_name: expect.any(String),
           last_name: expect.any(String),
           email: expect.any(String),
           profile_img_url: expect.any(String),
-          urls: expect.any(Array),
           user_type: "Entertainer",
           category: expect.any(String),
           location: expect.any(String),
           entertainer_name: expect.any(String),
           description: expect.any(String),
           price: expect.any(Number),
+          media: expect.any(Array)
         });
+        expect(body.entertainer.media).toHaveLength(2);
       });
   });
   test("404: Not Found", () => {
@@ -218,6 +219,7 @@ describe("GET /api/entertainers", () => {
             entertainer_name: expect.any(String),
             description: expect.any(String),
             price: expect.any(Number),
+            media: expect.any(Array)
           });
           expect(entertainer).not.toHaveProperty("password");
         });
@@ -254,6 +256,7 @@ describe("GET /api/entertainers?location", () => {
             entertainer_name: expect.any(String),
             description: expect.any(String),
             price: expect.any(Number),
+            media: expect.any(Array)
           });
           expect(entertainer).not.toHaveProperty("password");
         });
@@ -289,6 +292,7 @@ describe("GET /api/entertainers?category", () => {
             entertainer_name: expect.any(String),
             description: expect.any(String),
             price: expect.any(Number),
+            media: expect.any(Array)
           });
           expect(entertainer).not.toHaveProperty("password");
         });
@@ -324,6 +328,7 @@ describe("GET /api/entertainers?date", () => {
             entertainer_name: expect.any(String),
             description: expect.any(String),
             price: expect.any(Number),
+            media: expect.any(Array)
           });
           expect(entertainer).not.toHaveProperty("password");
         });
@@ -358,6 +363,7 @@ describe("GET /api/entertainers/:user_id", () => {
           entertainer_name: expect.any(String),
           description: expect.any(String),
           price: expect.any(Number),
+          media: expect.any(Array)
         });
         expect(body.entertainer).not.toHaveProperty("password");
       });

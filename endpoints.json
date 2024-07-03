@@ -18,7 +18,10 @@
         "location": "London",
         "entertainer_name": "Johnny the Juggler",
         "description": "A master of balance and coordination, this juggler dazzles audiences with a variety of props including balls, clubs, and rings. Known for their high-energy performances and humorous interactions, they bring a playful and captivating experience to any event",
-        "price": 20
+        "price": 20,
+        "media": [
+        "https://upload.wikimedia.org/wikipedia/commons/7/7f/Emma_Watson_2013.jpg"
+      ]
       }
     ]
   },
@@ -38,7 +41,7 @@
       "entertainer_name": "Emma the Violin Virtuoso",
       "description": "A highly skilled violinist with years of experience, Emma delivers soulful and captivating performances. Perfect for weddings, events, and private concerts.",
       "price": 30,
-      "urls": [
+      "media": [
         "https://upload.wikimedia.org/wikipedia/commons/7/7f/Emma_Watson_2013.jpg"
       ]
     }
