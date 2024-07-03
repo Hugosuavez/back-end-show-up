@@ -44,7 +44,7 @@ describe("userController Tests", () => {
       getUserByUsername.mockResolvedValue(mockUser);
 
       const token = jwt.sign({ username: "user1" }, secretKey, {
-        expiresIn: "1h",
+        expiresIn: "24h",
       });
       const response = await request(app)
         .get("/api/me")
@@ -81,7 +81,7 @@ describe("userController Tests", () => {
       getUserByUsername.mockResolvedValue(mockUser);
 
       const token = jwt.sign({ username: "entertainer_user" }, secretKey, {
-        expiresIn: "1h",
+        expiresIn: "24h",
       });
       const response = await request(app)
         .get("/api/me")
@@ -97,7 +97,7 @@ describe("userController Tests", () => {
       getUserByUsername.mockResolvedValue(null);
 
       const token = jwt.sign({ username: "nonexistent" }, secretKey, {
-        expiresIn: "1h",
+        expiresIn: "24h",
       });
       const response = await request(app)
         .get("/api/me")
