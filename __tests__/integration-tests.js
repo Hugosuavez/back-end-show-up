@@ -170,7 +170,6 @@ describe("GET /api/entertainers/:user_id", () => {
           last_name: expect.any(String),
           email: expect.any(String),
           profile_img_url: expect.any(String),
-          urls: expect.any(Array),
           user_type: "Entertainer",
           category: expect.any(String),
           location: expect.any(String),
@@ -180,9 +179,6 @@ describe("GET /api/entertainers/:user_id", () => {
           media: expect.any(Array)
         });
         expect(body.entertainer.media).toHaveLength(2);
-        expect(body.entertainer.media[0]).toMatchObject({
-          url: expect.any(String)
-        });
       });
   });
   test("404: Not Found", () => {

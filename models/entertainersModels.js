@@ -57,11 +57,11 @@ exports.fetchEntertainerById = (user_id) => {
     }
 
     const user = resolvedPromises[0].rows[0];
-    user.urls = [];
+    user.media = [];
     const images = resolvedPromises[1].rows;
 
     images.forEach((image) => {
-      user.urls.push(image.url);
+      user.media.push(image.url);
     });
 
     return user;

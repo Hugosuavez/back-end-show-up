@@ -24,7 +24,8 @@ exports.getEntertainers = async (req, res, next) => {
 
     const entertainersWithMedia = await Promise.all(entertainers.map(async (user) => {
       const { password, ...userWithoutPassword } = user;
-      const media = await fetchUserMediaByUserId(user.user_id);
+      const mediaObjects = await fetchUserMediaByUserId(user.user_id);
+      const media = mediaObjects.map(mediaObj => mediaObj.url);
       return { ...userWithoutPassword, media };
     }));
 
@@ -37,11 +38,10 @@ exports.getEntertainers = async (req, res, next) => {
 exports.getEntertainerById = (req, res, next) => {
   const { user_id } = req.params;
 
-  Promise.all([fetchEntertainerById(user_id), fetchUserMediaByUserId(user_id)])
-    .then(([entertainer, media]) => {
+  Promise.all([fetchEntertainerById(user_id)])
+    .then(([entertainer]) => {
       if (entertainer) {
         const { password, ...entertainerWithoutPassword } = entertainer;
-        entertainerWithoutPassword.media = media;
         res.status(200).send({ entertainer: entertainerWithoutPassword });
       } else {
         res.status(404).send({ error: "Entertainer not found" });

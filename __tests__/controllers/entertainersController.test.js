@@ -10,8 +10,12 @@ const {
   fetchEntertainers,
   fetchUserMediaByUserId,
 } = require("../../models/entertainersModels");
+const { checkCategoryIsValid } = require("../../models/categoriesModels");
+const { checkLocationIsValid } = require("../../models/locationsModels");
 
 jest.mock("../../models/entertainersModels");
+jest.mock("../../models/categoriesModels");
+jest.mock("../../models/locationsModels");
 
 const app = express();
 app.use(bodyParser.json());
@@ -23,7 +27,7 @@ describe("GET /api/entertainers/:user_id", () => {
     jest.resetAllMocks();
   });
 
-  test("200: responds with correct entertainer object without password and includes media", async () => {
+  test("200: responds with correct entertainer object without password and includes media as string array", async () => {
     const mockEntertainer = {
       user_id: 1,
       username: "j_depp",
@@ -31,7 +35,8 @@ describe("GET /api/entertainers/:user_id", () => {
       first_name: "Johnny",
       last_name: "Depp",
       email: "j.depp@gmail.com",
-      profile_img_url: "",
+      profile_img_url:
+        "https://cdn.britannica.com/89/152989-050-DDF277EA/Johnny-Depp-2011.jpg",
       user_type: "Entertainer",
       category: "Juggler",
       location: "London",
@@ -39,15 +44,13 @@ describe("GET /api/entertainers/:user_id", () => {
       description: "A master of balance and coordination...",
       price: 20,
       created_at: "2024-07-03T19:35:37.535Z",
+      media: [
+        "https://example.com/media1.jpg",
+        "https://example.com/media2.jpg",
+      ],
     };
 
-    const mockMedia = [
-      { url: "https://example.com/media1.jpg" },
-      { url: "https://example.com/media2.jpg" },
-    ];
-
     fetchEntertainerById.mockResolvedValue(mockEntertainer);
-    fetchUserMediaByUserId.mockResolvedValue(mockMedia);
 
     const response = await request(app).get("/api/entertainers/1").expect(200);
 
@@ -57,7 +60,8 @@ describe("GET /api/entertainers/:user_id", () => {
       first_name: "Johnny",
       last_name: "Depp",
       email: "j.depp@gmail.com",
-      profile_img_url: "",
+      profile_img_url:
+        "https://cdn.britannica.com/89/152989-050-DDF277EA/Johnny-Depp-2011.jpg",
       user_type: "Entertainer",
       category: "Juggler",
       location: "London",
@@ -65,9 +69,11 @@ describe("GET /api/entertainers/:user_id", () => {
       description: "A master of balance and coordination...",
       price: 20,
       created_at: "2024-07-03T19:35:37.535Z",
-      media: expect.any(Array),
     });
-    expect(response.body.entertainer.media).toEqual(mockMedia);
+    expect(response.body.entertainer.media).toEqual([
+      "https://example.com/media1.jpg",
+      "https://example.com/media2.jpg",
+    ]);
     expect(response.body.entertainer).not.toHaveProperty("password");
   });
 
@@ -87,97 +93,50 @@ describe("GET /api/entertainers", () => {
     jest.resetAllMocks();
   });
 
-  test("200: responds with an array of entertainer objects without passwords and includes media", async () => {
+  test("200: responds with a list of entertainers and their media for valid location and category", async () => {
     const mockEntertainers = [
-      {
-        user_id: 1,
-        username: "j_depp",
-        password: "hashedpassword",
-        first_name: "Johnny",
-        last_name: "Depp",
-        email: "j.depp@gmail.com",
-        profile_img_url: "",
-        user_type: "Entertainer",
-        category: "Juggler",
-        location: "London",
-        entertainer_name: "Johnny the Juggler",
-        description: "A master of balance and coordination...",
-        price: 20,
-        created_at: "2024-07-03T19:35:37.535Z",
-      },
-      {
-        user_id: 2,
-        username: "a_smith",
-        password: "hashedpassword",
-        first_name: "Anna",
-        last_name: "Smith",
-        email: "a.smith@gmail.com",
-        profile_img_url: "",
-        user_type: "Entertainer",
-        category: "Singer",
-        location: "Manchester",
-        entertainer_name: "Anna the Singer",
-        description: "A master of singing...",
-        price: 30,
-        created_at: "2024-07-03T19:35:37.535Z",
-      },
+      { user_id: 1, username: "j_depp", password: "hashedpassword" },
+      { user_id: 3, username: "d_radcliffe", password: "hashedpassword" },
     ];
-
-    const mockMedia1 = [
+    const mockMedia = [
       { url: "https://example.com/media1.jpg" },
       { url: "https://example.com/media2.jpg" },
     ];
 
-    const mockMedia2 = [
-      { url: "https://example.com/media3.jpg" },
-      { url: "https://example.com/media4.jpg" },
-    ];
-
     fetchEntertainers.mockResolvedValue(mockEntertainers);
-    fetchUserMediaByUserId
-      .mockResolvedValueOnce(mockMedia1)
-      .mockResolvedValueOnce(mockMedia2);
+    checkLocationIsValid.mockResolvedValue(true);
+    checkCategoryIsValid.mockResolvedValue(true);
+    fetchUserMediaByUserId.mockResolvedValue(mockMedia);
 
-    const response = await request(app).get("/api/entertainers").expect(200);
+    const response = await request(app)
+      .get("/api/entertainers?location=London&category=Juggler&date=2023-07-01")
+      .expect(200);
 
-    expect(response.body.entertainers).toHaveLength(2);
+    expect(fetchEntertainers).toHaveBeenCalledWith(
+      "London",
+      "Juggler",
+      "2023-07-01"
+    );
+    expect(checkLocationIsValid).toHaveBeenCalledWith("London");
+    expect(checkCategoryIsValid).toHaveBeenCalledWith("Juggler");
 
-    expect(response.body.entertainers[0]).toMatchObject({
-      user_id: 1,
-      username: "j_depp",
-      first_name: "Johnny",
-      last_name: "Depp",
-      email: "j.depp@gmail.com",
-      profile_img_url: "",
-      user_type: "Entertainer",
-      category: "Juggler",
-      location: "London",
-      entertainer_name: "Johnny the Juggler",
-      description: "A master of balance and coordination...",
-      price: 20,
-      created_at: "2024-07-03T19:35:37.535Z",
-      media: expect.any(Array),
-    });
-    expect(response.body.entertainers[0].media).toEqual(mockMedia1);
-    expect(response.body.entertainers[0]).not.toHaveProperty("password");
-
-    expect(response.body.entertainers[1]).toMatchObject({
-      user_id: 2,
-      username: "a_smith",
-      first_name: "Anna",
-      last_name: "Smith",
-      email: "a.smith@gmail.com",
-      profile_img_url: "",
-      user_type: "Entertainer",
-      category: "Singer",
-      location: "Manchester",
-      entertainer_name: "Anna the Singer",
-      description: "A master of singing...",
-      price: 30,
-      created_at: "2024-07-03T19:35:37.535Z",
-      media: expect.any(Array),
-    });
-    expect(response.body.entertainers[1].media).toEqual(mockMedia2);
-    expect(response.body.entertainers[1]).not.toHaveProperty("password");
+    expect(response.body.entertainers).toEqual([
+      {
+        user_id: 1,
+        username: "j_depp",
+        media: [
+          "https://example.com/media1.jpg",
+          "https://example.com/media2.jpg",
+        ],
+      },
+      {
+        user_id: 3,
+        username: "d_radcliffe",
+        media: [
+          "https://example.com/media1.jpg",
+          "https://example.com/media2.jpg",
+        ],
+      },
+    ]);
   });
 });
