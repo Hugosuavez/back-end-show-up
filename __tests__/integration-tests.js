@@ -3,6 +3,7 @@ const app = require('../app')
 const db = require('../db/connection')
 const seed = require('../db/seeds/seed')
 const data = require('../db/data/test-data')
+const endpointsData = require('../endpoints.json')
 
 afterAll(() => {
     return db.end();
@@ -22,7 +23,6 @@ describe('GET /api/entertainers', () => {
             body.entertainers.forEach((user) => {
                 expect(user).toMatchObject({
                     username: expect.any(String),
-                    password: expect.any(String),
                     first_name: expect.any(String),
                     last_name: expect.any(String),
                     email: expect.any(String),
@@ -60,7 +60,6 @@ describe('GET /api/entertainers?location', () => {
             body.entertainers.forEach((entertainer) => {
                 expect(entertainer).toMatchObject({
                     username: expect.any(String),
-                    password: expect.any(String),
                     first_name: expect.any(String),
                     last_name: expect.any(String),
                     email: expect.any(String),
@@ -97,7 +96,6 @@ describe('GET /api/entertainers?category', () => {
             body.entertainers.forEach((entertainer) => {
                 expect(entertainer).toMatchObject({
                     username: expect.any(String),
-                    password: expect.any(String),
                     first_name: expect.any(String),
                     last_name: expect.any(String),
                     email: expect.any(String),
@@ -134,7 +132,6 @@ describe('GET /api/entertainers?date', () => {
             body.entertainers.forEach((entertainer) => {
                 expect(entertainer).toMatchObject({
                     username: expect.any(String),
-                    password: expect.any(String),
                     first_name: expect.any(String),
                     last_name: expect.any(String),
                     email: expect.any(String),
@@ -170,19 +167,18 @@ describe('GET /api/entertainers/:user_id', () => {
             expect(body.entertainer).toMatchObject({
                 user_id: 2,
                 username: expect.any(String),
-                password: expect.any(String),
                 first_name: expect.any(String),
                 last_name: expect.any(String),
                 email: expect.any(String),
                 profile_img_url: expect.any(String),
+                urls: expect.any(Array),
                 user_type: 'Entertainer',
                 category: expect.any(String),
                 location: expect.any(String),
                 entertainer_name: expect.any(String),
                 description: expect.any(String),
                 price: expect.any(Number),
-                url: expect.any(String),
-                media_id: expect.any(Number)
+               
             })
         })
     })
@@ -308,3 +304,13 @@ describe('GET /categories', () => {
     })
 })
 
+describe('GET /api', () => {
+    test('200: responds with an object containing descriptions of all other endpoints', () => {
+        return request(app)
+        .get('/api')
+        .expect(200)
+        .then(({body}) => {
+            expect(body.endpoints).toEqual(endpointsData)
+        })
+    })
+})

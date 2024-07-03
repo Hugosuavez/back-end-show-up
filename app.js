@@ -13,6 +13,8 @@ const registrationRoutes = require("./routes/registrationRoute");
 const usersRoute = require("./routes/usersRoute");
 const { getLocations } = require("./controllers/locationsControllers");
 const { getCategories } = require("./controllers/categoriesControllers");
+const { getEndpoints }  = require("./controllers/endpointsControllers")
+
 
 const app = express();
 
@@ -36,6 +38,8 @@ app.get('/api/locations', getLocations)
 app.get('/api/categories', getCategories)
 
 
+app.get('/api', getEndpoints)
+
 //Error handling middleware
 app.use((err, req, res, next) => {
   if (err.msg) {
@@ -43,7 +47,7 @@ app.use((err, req, res, next) => {
   } else if (err.code === "22P02") {
     res.status(400).send({ msg: "400: Bad Request" });
   } else {
-    console.error(err); // Log unexpected errors
+    console.log(err); // Log unexpected errors
     res.status(500).send({ msg: err.message });
   }
 });
