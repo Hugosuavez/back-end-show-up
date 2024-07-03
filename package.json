@@ -9,7 +9,16 @@
     "seed": "node ./db/seeds/run-seed.js",
     "start": "node listen.js",
     "seed-prod": "NODE_ENV=production npm run seed",
-    "playground": "psql -f psql-playground.sql > psql-text-playground.txt"
+    "playground": "psql -f psql-playground.sql > psql-text-playground.txt",
+    "prepare": "husky install"
+  },
+  "lint-staged": {
+    "*.js": "npm test"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
   },
   "keywords": [],
   "author": "",
@@ -29,7 +38,9 @@
   },
   "devDependencies": {
     "aws-sdk-client-mock": "^4.0.1",
+    "husky": "^8.0.0",
     "jest": "^29.7.0",
+    "lint-staged": "^15.2.7",
     "pg-format": "^1.0.4",
     "supertest": "^7.0.0"
   }
