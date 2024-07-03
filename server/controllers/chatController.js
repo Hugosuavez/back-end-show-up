@@ -1,4 +1,4 @@
-const chatModel = require("../Models/chatModel");
+const chatModel = require("../models/chatModel");
 
 const createChat = async (req, res) => {
   const { senderId, receiverId } = req.body;

@@ -35,7 +35,6 @@ const NavBar = () => {
 
             {user && (
               <>
-                <Notifications />
                 <Link
                   onClick={() => logoutUser()}
                   to="/login"
