@@ -1,4 +1,22 @@
-const { addBookings } = require('../models/bookingsModels');
+const { addBookings, fetchAllBookings, fetchBookingById } = require('../models/bookingsModels');
+
+
+exports.getAllBookings = (req, res, next) => {
+  fetchAllBookings()
+    .then((bookings) => {
+      res.status(200).send({ bookings });
+    })
+    .catch(next);
+};
+
+exports.getBookingById = (req, res, next) => {
+  const { bookingId } = req.params;
+  fetchBookingById(bookingId)
+    .then((booking) => {
+      res.status(200).send({ booking });
+    })
+    .catch(next);
+};
 
 exports.postBookings = (req, res, next) => {
     const { user_id, entertainer_id, booking_date, event_details, address } = req.body;

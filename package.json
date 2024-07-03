@@ -2,12 +2,13 @@
   "name": "back-end-show-up",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "listen.js",
   "scripts": {
     "test": "jest",
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
-    "start": "node app.js",
+    "start": "node listen.js",
+    "seed-prod": "NODE_ENV=production npm run seed",
     "playground": "psql -f psql-playground.sql > psql-text-playground.txt"
   },
   "keywords": [],
