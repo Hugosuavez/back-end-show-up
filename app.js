@@ -1,6 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+
+const {getEntertainers, getEntertainerById} = require('./controllers/entertainersControllers')
+const { postBookings } = require('./controllers/bookingsControllers')
+
 dotenv.config();
 
 const {
@@ -26,11 +30,15 @@ app.use("/api", authRoutes);
 app.use("/api", registrationRoutes);
 app.use("/api", usersRoute);
 
-app.get("/api/entertainers", getEntertainers);
-app.get("/api/entertainers/:user_id", getEntertainerById);
+
+app.get('/api/entertainers', getEntertainers)
+app.get('/api/entertainers/:user_id', getEntertainerById)
+
+app.post('/api/bookings', postBookings)
 
 app.get('/api/locations', getLocations)
 app.get('/api/categories', getCategories)
+
 
 //Error handling middleware
 app.use((err, req, res, next) => {
