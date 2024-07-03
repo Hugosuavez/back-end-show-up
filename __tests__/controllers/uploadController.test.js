@@ -1,12 +1,20 @@
-// __tests__/controllers/uploadFile.test.js
-
 const request = require('supertest');
-const app = require('../../app'); // Adjust the path as necessary
+const jwt = require('jsonwebtoken');
+const app = require('../../app'); 
 const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 const { mockClient } = require('aws-sdk-client-mock');
 
 // Mock the S3 client
 const s3Mock = mockClient(S3Client);
+
+// Mock user data and JWT secret
+const mockUser = { id: 1, username: 'testuser' };
+const secretKey = 'yourSecretKey'; // must match the secret key in authController
+
+// Generate a mock JWT for testing
+const generateMockJWT = () => {
+  return jwt.sign(mockUser, secretKey, { expiresIn: '1h' });
+};
 
 describe('uploadController Tests', () => {
   beforeAll(() => {
@@ -21,16 +29,20 @@ describe('uploadController Tests', () => {
   });
 
   it('should return 400 if no file is uploaded', async () => {
+    const token = generateMockJWT();
     const response = await request(app)
-      .post('/api/upload');
+      .post('/api/upload')
+      .set('Authorization', token);
     
     expect(response.status).toBe(400);
     expect(response.text).toBe('No files were uploaded.');
   });
 
   it('should upload an image and return the URL', async () => {
+    const token = generateMockJWT();
     const response = await request(app)
       .post('/api/upload')
+      .set('Authorization', token)
       .attach('file', Buffer.from('fake-image-content'), 'test-image.png');
 
     const expectedLocation = `https://show-up-northcoders.s3.amazonaws.com/${response.body.location.split('/').pop()}`;
