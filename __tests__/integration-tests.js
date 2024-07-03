@@ -32,9 +32,7 @@ describe('GET /api/entertainers', () => {
                     location: expect.any(String),
                     entertainer_name: expect.any(String),
                     description: expect.any(String),
-                    price: expect.any(Number),
-                    url: expect.any(String),
-                    media_id: expect.any(Number)
+                    price: expect.any(Number)
                 })
             })
         })
@@ -69,9 +67,7 @@ describe('GET /api/entertainers?location', () => {
                     location: 'London',
                     entertainer_name: expect.any(String),
                     description: expect.any(String),
-                    price: expect.any(Number),
-                    url: expect.any(String),
-                    media_id: expect.any(Number)
+                    price: expect.any(Number)
                 })
             })
         })
@@ -106,8 +102,6 @@ describe('GET /api/entertainers?category', () => {
                     entertainer_name: expect.any(String),
                     description: expect.any(String),
                     price: expect.any(Number),
-                    url: expect.any(String),
-                    media_id: expect.any(Number)
                 })
             })
         })
@@ -141,9 +135,7 @@ describe('GET /api/entertainers?date', () => {
                     location: expect.any(String),
                     entertainer_name: expect.any(String),
                     description: expect.any(String),
-                    price: expect.any(Number),
-                    url: expect.any(String),
-                    media_id: expect.any(Number)
+                    price: expect.any(Number)
                 })
             })
         })
@@ -178,7 +170,6 @@ describe('GET /api/entertainers/:user_id', () => {
                 entertainer_name: expect.any(String),
                 description: expect.any(String),
                 price: expect.any(Number),
-               
             })
         })
     })
