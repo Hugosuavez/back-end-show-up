@@ -1,12 +1,76 @@
 {
-    "GET /api": {
+  "GET /api": {
     "description": "serves a json representation of all the available endpoints of the api"
   },
-"GET /api/entertainers": {
+  "GET /api/entertainers": {
     "description": "serves up an array of all entertainers",
     "queries": ["location", "category", "date"],
-    "exampleResponse": [{
-        
-    }]
-}
+    "exampleResponse": [
+      {
+        "user_id": 1,
+        "username": "j_depp",
+        "first_name": "Johnny",
+        "last_name": "Depp",
+        "email": "j.depp@gmail.com",
+        "profile_img_url": "https://cdn.britannica.com/89/152989-050-DDF277EA/Johnny-Depp-2011.jpg",
+        "user_type": "Entertainer",
+        "category": "Juggler",
+        "location": "London",
+        "entertainer_name": "Johnny the Juggler",
+        "description": "A master of balance and coordination, this juggler dazzles audiences with a variety of props including balls, clubs, and rings. Known for their high-energy performances and humorous interactions, they bring a playful and captivating experience to any event",
+        "price": 20
+      }
+    ]
+  },
+  "GET /api/entertainers/:user_id": {
+    "description": "serves an entertainer object based on specified user_id",
+    "queries": [],
+    "exampleResponse": {
+      "user_id": 2,
+      "username": "e_watson",
+      "first_name": "Emma",
+      "last_name": "Watson",
+      "email": "e.watson@gmail.com",
+      "profile_img_url": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Emma_Watson_2013.jpg",
+      "user_type": "Entertainer",
+      "category": "Violinist",
+      "location": "Oxford",
+      "entertainer_name": "Emma the Violin Virtuoso",
+      "description": "A highly skilled violinist with years of experience, Emma delivers soulful and captivating performances. Perfect for weddings, events, and private concerts.",
+      "price": 30,
+      "urls": [
+        "https://upload.wikimedia.org/wikipedia/commons/7/7f/Emma_Watson_2013.jpg"
+      ]
+    }
+  },
+  "GET /api/locations": {
+    "description": "serves an array of location objects",
+    "queries": [],
+    "exampleResponse": [{ "location": "London" }, { "location": "Oxford" }]
+  },
+  "GET /api/categories": {
+    "description": "serves an array of location objects",
+    "queries": [],
+    "exampleResponse": [{ "category": "Juggler" }, { "category": "Violinist" }]
+  },
+
+  "POST /api/bookings": {
+    "description": "posts a new booking and returns it",
+    "queries": [],
+    "requestBodyFormat": {
+      "user_id": 1,
+      "entertainer_id": 2,
+      "booking_date": "new Date().toISOString()",
+      "event_details": "Leaving Drinks",
+      "address": "Upper Ground, London"
+    },
+    "exampleResponse": {
+      "booking_id": 3,
+      "user_id": 1,
+      "entertainer_id": 2,
+      "booking_date": "2024-07-03T16:05:12.032Z",
+      "event_details": "Leaving Drinks",
+      "address": "Upper Ground, London"
+    }
+  }
 }
