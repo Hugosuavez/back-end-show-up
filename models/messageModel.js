@@ -52,3 +52,18 @@ exports.fetchConversationsWith = (conversationsWithUsername, userId) => {
       return rows;
     });
 };
+
+exports.sendMessage = (senderId, recipientId, message) => {
+  return db
+    .query(
+      `
+      INSERT INTO messages (sender_id, recipient_id, message)
+      VALUES ($1, $2, $3)
+      RETURNING *;
+    `,
+      [senderId, recipientId, message]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
