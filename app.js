@@ -19,6 +19,7 @@ const uploadRoutes = require("./routes/uploadRoute");
 const authRoutes = require("./routes/authRoute");
 const registrationRoutes = require("./routes/registrationRoute");
 const usersRoute = require("./routes/usersRoute");
+const messageRoute = require("./routes/messageRoute");
 const { getLocations } = require("./controllers/locationsControllers");
 const { getCategories } = require("./controllers/categoriesControllers");
 const { getEndpoints } = require("./controllers/endpointsControllers");
@@ -34,6 +35,7 @@ app.use("/api", uploadRoutes);
 app.use("/api", authRoutes);
 app.use("/api", registrationRoutes);
 app.use("/api", usersRoute);
+app.use("/api", messageRoute);
 
 app.get("/api/entertainers", getEntertainers);
 app.get("/api/entertainers/:user_id", getEntertainerById);
