@@ -1,6 +1,6 @@
 const {
   fetchConversations,
-  fetchMessageById,
+  fetchConversationsWith,
 } = require("../models/messageModel");
 
 exports.getConversations = (req, res, next) => {
@@ -11,11 +11,12 @@ exports.getConversations = (req, res, next) => {
     .catch(next);
 };
 
-exports.getMessageById = (req, res, next) => {
-  const { messageId } = req.params;
-  fetchMessageById(messageId)
-    .then((message) => {
-      res.status(200).send(message);
+exports.getConversationByUsername = (req, res, next) => {
+  const { conversationsWith } = req.params;
+  const userId = req.user.id;
+  fetchConversationsWith(conversationsWith, userId)
+    .then((messages) => {
+      res.status(200).send(messages);
     })
     .catch(next);
 };

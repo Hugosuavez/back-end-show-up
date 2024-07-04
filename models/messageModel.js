@@ -25,10 +25,9 @@ exports.fetchConversations = (userId) => {
     });
 };
 
-exports.fetchMessageById = (messageId) => {
+exports.fetchConversationsWith = (conversationsWithUsername, userId) => {
   return db
-    .query(
-      `
+    .query(`
       SELECT 
         m.message_id, 
         m.sender_id, 
@@ -44,14 +43,12 @@ exports.fetchMessageById = (messageId) => {
       JOIN 
         users u2 ON m.recipient_id = u2.user_id
       WHERE 
-        m.message_id = $1;
-    `,
-      [messageId]
-    )
+        (u1.username = $1 AND m.recipient_id = $2)
+        OR (u2.username = $1 AND m.sender_id = $2)
+      ORDER BY 
+        m.message_id ASC;
+    `, [conversationsWithUsername, userId])
     .then(({ rows }) => {
-      if (rows.length === 0) {
-        return Promise.reject({ status: 404, msg: "Message not found" });
-      }
-      return rows[0];
+      return rows;
     });
 };
