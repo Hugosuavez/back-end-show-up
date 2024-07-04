@@ -176,7 +176,7 @@ describe("GET /api/entertainers/:user_id", () => {
           entertainer_name: expect.any(String),
           description: expect.any(String),
           price: expect.any(Number),
-          media: expect.any(Array)
+          media: expect.any(Array),
         });
         expect(body.entertainer.media).toHaveLength(2);
       });
@@ -219,7 +219,7 @@ describe("GET /api/entertainers", () => {
             entertainer_name: expect.any(String),
             description: expect.any(String),
             price: expect.any(Number),
-            media: expect.any(Array)
+            media: expect.any(Array),
           });
           expect(entertainer).not.toHaveProperty("password");
         });
@@ -256,7 +256,7 @@ describe("GET /api/entertainers?location", () => {
             entertainer_name: expect.any(String),
             description: expect.any(String),
             price: expect.any(Number),
-            media: expect.any(Array)
+            media: expect.any(Array),
           });
           expect(entertainer).not.toHaveProperty("password");
         });
@@ -292,7 +292,7 @@ describe("GET /api/entertainers?category", () => {
             entertainer_name: expect.any(String),
             description: expect.any(String),
             price: expect.any(Number),
-            media: expect.any(Array)
+            media: expect.any(Array),
           });
           expect(entertainer).not.toHaveProperty("password");
         });
@@ -328,7 +328,7 @@ describe("GET /api/entertainers?date", () => {
             entertainer_name: expect.any(String),
             description: expect.any(String),
             price: expect.any(Number),
-            media: expect.any(Array)
+            media: expect.any(Array),
           });
           expect(entertainer).not.toHaveProperty("password");
         });
@@ -363,7 +363,7 @@ describe("GET /api/entertainers/:user_id", () => {
           entertainer_name: expect.any(String),
           description: expect.any(String),
           price: expect.any(Number),
-          media: expect.any(Array)
+          media: expect.any(Array),
         });
         expect(body.entertainer).not.toHaveProperty("password");
       });
@@ -392,7 +392,7 @@ describe("GET /api/locations", () => {
       .get("/api/locations")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toHaveLength(2);
+        expect(body).toHaveLength(7);
         body.forEach((location) => {
           expect(location).toMatchObject({
             location: expect.any(String),
@@ -408,7 +408,7 @@ describe("GET /api/categories", () => {
       .get("/api/categories")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toHaveLength(2);
+        expect(body).toHaveLength(5);
         body.forEach((category) => {
           expect(category).toMatchObject({
             category: expect.any(String),
@@ -451,6 +451,259 @@ describe("GET /api", () => {
       .expect(200)
       .then(({ body }) => {
         expect(body.endpoints).toEqual(endpointsData);
+      });
+  });
+});
+
+describe("POST /api/bookings", () => {
+  test("201: adds a new booking to the bookings list", () => {
+    const newBooking = {
+      user_id: 1,
+      entertainer_id: 2,
+      booking_date: new Date().toISOString(),
+      event_details: "Leaving Drinks",
+      address: "Upper Ground, London",
+    };
+
+    return request(app)
+      .post("/api/bookings")
+      .send(newBooking)
+      .expect(201)
+      .then(({ body }) => {
+        expect(Object.keys(body.booking)).toHaveLength(6);
+        expect(body.booking.user_id).toBe(newBooking.user_id);
+        expect(body.booking.entertainer_id).toBe(newBooking.entertainer_id);
+        expect(body.booking.booking_date).toBe(newBooking.booking_date);
+        expect(body.booking.event_details).toBe(newBooking.event_details);
+        expect(body.booking.address).toBe(newBooking.address);
+      });
+  });
+  test("404: Not Found ", () => {
+    const newBooking = {
+      user_id: 1,
+      entertainer_id: 2,
+      booking_date: new Date().toISOString(),
+      event_details: "Leaving Drinks",
+      address: "Upper Ground, London",
+    };
+
+    return request(app)
+      .post("/api/nonsense")
+      .send(newBooking)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404: route not found");
+      });
+  });
+  test("400: Bad Request failing schema validation", () => {
+    const newBooking = {
+      user_id: 1,
+      entertainer_id: 2,
+      booking_date: 77,
+      event_details: 78,
+      address: "Upper Ground, London",
+    };
+  });
+});
+
+describe("GET /api/bookings", () => {
+  test("200: responds with an array objects with correct properties", () => {
+    return request(app)
+      .get("/api/bookings")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.bookings).toHaveLength(2);
+        body.bookings.forEach((booking) => {
+          expect(booking).toMatchObject({
+            user_id: expect.any(Number),
+            entertainer_id: expect.any(Number),
+            booking_date: expect.any(String),
+            event_details: expect.any(String),
+            address: expect.any(String),
+          });
+        });
+      });
+  });
+
+  test("404: route not found", () => {
+    return request(app)
+      .get("/api/nonsense")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("404: route not found");
+      });
+  });
+});
+
+describe("GET /api/bookings/:booking_id", () => {
+  test("200: responds with correct booking object", () => {
+    return request(app)
+      .get("/api/bookings/1")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.booking).toMatchObject({
+          user_id: expect.any(Number),
+          entertainer_id: expect.any(Number),
+          booking_date: expect.any(String),
+          event_details: expect.any(String),
+          address: expect.any(String),
+        });
+      });
+  });
+  test("404: Not Found", () => {
+    return request(app)
+      .get("/api/bookings/9999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Booking not found");
+      });
+  });
+  test("400: Bad Request", () => {
+    return request(app)
+      .get("/api/bookings/biro")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad Request");
+      });
+  });
+});
+
+describe("PATCH /api/entertainers/:user_id", () => {
+  const userId = 1;
+
+  test("PATCH:200 updates category", () => {
+    const patchObj = { category: "Violinist" };
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.entertainer.category).toBe(patchObj.category);
+      });
+  });
+
+  test("PATCH:200 updates location", () => {
+    const patchObj = { location: "Liverpool" };
+
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.entertainer.location).toBe(patchObj.location);
+      });
+  });
+
+  test("PATCH:200 updates entertainer_name", () => {
+    const patchObj = { entertainer_name: "Gareth Southgate" };
+
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.entertainer.entertainer_name).toBe(
+          patchObj.entertainer_name
+        );
+      });
+  });
+
+  test("PATCH:200 updates description", () => {
+    const patchObj = {
+      description:
+        "a respected English football manager and former player known for my calm demeanor, tactical acumen, and dedication to nurturing young talent.",
+    };
+
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.entertainer.description).toBe(patchObj.description);
+      });
+  });
+
+  test("PATCH:200 updates price", () => {
+    const patchObj = { price: 850 };
+
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.entertainer.price).toBe(patchObj.price);
+      });
+  });
+
+  test("PATCH:200 updates email", () => {
+    const patchObj = { email: "gareth.southgate@england.com" };
+
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.entertainer.email).toBe(patchObj.email);
+      });
+  });
+
+  test("PATCH:400 returns error for incorrect type in body", () => {
+    const patchObj = {
+      price: "850",
+      description: 231,
+      entertainer_name: 123,
+      location: 2331,
+      category: 12312,
+    };
+
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.error).toMatchObject({
+          price: "Incorrect data type",
+          description: "Incorrect data type",
+          entertainer_name: "Incorrect data type",
+          location: "Incorrect data type",
+          category: "Incorrect data type",
+        });
+      });
+  });
+  test("PATCH:400 returns error for unknown location", () => {
+    const patchObj = { location: "Glasgow" };
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.error).toMatchObject({
+          location: "This location is COMING SOON!",
+        });
+      });
+  });
+  test("PATCH:400 returns error for unknown location", () => {
+    const patchObj = { location: "Glasgow" };
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.error).toMatchObject({
+          location: "This location is COMING SOON!",
+        });
+      });
+  });
+  test("PATCH:400 returns error for unknown category", () => {
+    const patchObj = { category: "Motorist" };
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.error).toMatchObject({
+          location: "This category is COMING SOON!",
+        });
       });
   });
 });

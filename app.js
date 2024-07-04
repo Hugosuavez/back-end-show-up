@@ -5,8 +5,13 @@ const dotenv = require("dotenv");
 const {
   getEntertainers,
   getEntertainerById,
+  patchEntertainerById
 } = require("./controllers/entertainersControllers");
-const { postBookings } = require("./controllers/bookingsControllers");
+const { 
+  postBookings, 
+  getAllBookings, 
+  getBookingById 
+} = require("./controllers/bookingsControllers");
 
 dotenv.config();
 
@@ -32,11 +37,12 @@ app.use("/api", usersRoute);
 
 app.get("/api/entertainers", getEntertainers);
 app.get("/api/entertainers/:user_id", getEntertainerById);
-
-app.post("/api/bookings", postBookings);
-
-app.get("/api/locations", getLocations);
-app.get("/api/categories", getCategories);
+app.get('/api/bookings', getAllBookings);
+app.get('/api/bookings/:booking_id', getBookingById);
+app.post('/api/bookings', postBookings)
+app.patch('/api/entertainers/:user_id', patchEntertainerById)
+app.get('/api/locations', getLocations)
+app.get('/api/categories', getCategories)
 
 app.get("/api", getEndpoints);
 

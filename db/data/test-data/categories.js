@@ -5,4 +5,13 @@ module.exports = [
   {
     category: "Violinist",
   },
+  {
+    category: "Musicians",
+  },
+  {
+    category: "Comedians",
+  },
+  {
+    category: "Look-a-likes",
+  },
 ];
