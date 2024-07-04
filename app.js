@@ -3,7 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 
 const {getEntertainers, getEntertainerById} = require('./controllers/entertainersControllers')
-const { postBookings } = require('./controllers/bookingsControllers')
+const { postBookings, getAllBookings, getBookingById } = require('./controllers/bookingsControllers')
 
 dotenv.config();
 
@@ -31,8 +31,11 @@ app.use("/api", usersRoute);
 
 app.get('/api/entertainers', getEntertainers)
 app.get('/api/entertainers/:user_id', getEntertainerById)
+app.get('/api/bookings', getAllBookings);
+app.get('/api/bookings/:booking_id', getBookingById);
 
 app.post('/api/bookings', postBookings)
+
 
 app.get('/api/locations', getLocations)
 app.get('/api/categories', getCategories)
