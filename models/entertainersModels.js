@@ -75,3 +75,27 @@ exports.fetchUserMediaByUserId = (user_id) => {
       return result.rows;
     });
 };
+
+
+exports.updateEntertainersById = (user_id, category, location, entertainer_name, description, price, email ) => {
+
+  const query = `
+    UPDATE users
+    SET 
+      category = COALESCE($2, category),
+      location = COALESCE($3, location),
+      entertainer_name = COALESCE($4, entertainer_name),
+      description = COALESCE($5, description),
+      price = COALESCE($6, price),
+      email = COALESCE($7, email)
+    WHERE user_id = $1
+    RETURNING *
+  `;
+
+  const values = [user_id, category, location, entertainer_name, description, price, email];
+
+  return db.query(query, values)
+    .then((result) => {
+      return result.rows[0]
+    });
+}
