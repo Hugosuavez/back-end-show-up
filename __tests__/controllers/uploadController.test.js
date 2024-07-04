@@ -1,54 +1,79 @@
-const request = require('supertest');
-const jwt = require('jsonwebtoken');
-const app = require('../../app'); 
-const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
-const { mockClient } = require('aws-sdk-client-mock');
+const path = require("path");
+const request = require("supertest");
+const jwt = require("jsonwebtoken");
+const app = require("../../app");
+const { insertUserMedia } = require("../../models/userMediaModel");
+const { uploadToS3 } = require("../../services/s3Service");
+const fs = require("fs");
+const { Readable } = require("stream");
 
-// Mock the S3 client
-const s3Mock = mockClient(S3Client);
+// Mock the insertUserMedia function
+jest.mock("../../models/userMediaModel");
 
-// Mock user data and JWT secret
-const mockUser = { id: 1, username: 'testuser' };
-const secretKey = 'yourSecretKey'; // must match the secret key in authController
+// Mock the uploadToS3 function
+jest.mock("../../services/s3Service");
+
+const mockUser = { id: 1, username: "testuser" };
+const secretKey = "yourSecretKey";
 
 // Generate a mock JWT for testing
 const generateMockJWT = () => {
-  return jwt.sign(mockUser, secretKey, { expiresIn: '1h' });
+  return jwt.sign(mockUser, secretKey, { expiresIn: "24h" });
 };
 
-describe('uploadController Tests', () => {
+// Helper function to create a readable stream from a buffer
+const bufferToStream = (buffer) => {
+  const stream = new Readable();
+  stream.push(buffer);
+  stream.push(null);
+  return stream;
+};
+
+describe("uploadController Tests", () => {
   beforeAll(() => {
-    // Mock the PutObjectCommand to always return the mocked URL
-    s3Mock.on(PutObjectCommand).resolves({
-      Location: 'https://mocked-url.com/mock-image.png',
+    uploadToS3.mockResolvedValue("https://mocked-url.com/mock-image.png");
+
+    insertUserMedia.mockResolvedValue({
+      media_id: 1,
+      url: "https://mocked-url.com/mock-image.png",
+      user_id: mockUser.id,
+      created_at: new Date(),
     });
   });
 
   afterAll(() => {
-    s3Mock.reset();
+    jest.resetAllMocks();
   });
 
-  it('should return 400 if no file is uploaded', async () => {
+  it("should return 400 if no file is uploaded", async () => {
     const token = generateMockJWT();
     const response = await request(app)
-      .post('/api/upload')
-      .set('Authorization', token);
-    
+      .post("/api/upload")
+      .set("Authorization", token);
+
     expect(response.status).toBe(400);
-    expect(response.text).toBe('No files were uploaded.');
+    expect(response.text).toBe("No files were uploaded.");
   });
 
-  it('should upload an image and return the URL', async () => {
+  it("should upload an image, return the URL, and store it in the database", async () => {
     const token = generateMockJWT();
-    const response = await request(app)
-      .post('/api/upload')
-      .set('Authorization', token)
-      .attach('file', Buffer.from('fake-image-content'), 'test-image.png');
+    const buffer = Buffer.from("fake-image-content");
+    const stream = bufferToStream(buffer);
 
-    const expectedLocation = `https://show-up-northcoders.s3.amazonaws.com/${response.body.location.split('/').pop()}`;
-    
+    const response = await request(app)
+      .post("/api/upload")
+      .set("Authorization", token)
+      .attach("file", stream, "test-image.png"); // Use the in-memory stream
+
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('message', 'File uploaded successfully.');
-    expect(response.body).toHaveProperty('location', expectedLocation);
+    expect(response.body).toHaveProperty(
+      "message",
+      "File successfully uploaded!"
+    );
+    expect(response.body.media).toHaveProperty(
+      "url",
+      "https://mocked-url.com/mock-image.png"
+    );
+    expect(response.body.media).toHaveProperty("user_id", mockUser.id);
   });
 });

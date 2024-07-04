@@ -4,7 +4,7 @@
   "description": "",
   "main": "listen.js",
   "scripts": {
-    "test": "jest",
+    "test": "NODE_ENV=test jest",
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
     "start": "node listen.js",
@@ -31,7 +31,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "express-fileupload": "^1.5.0",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.12.0",
     "postgres": "^3.4.4"

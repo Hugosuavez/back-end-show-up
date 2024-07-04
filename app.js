@@ -2,8 +2,16 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
-const {getEntertainers, getEntertainerById, patchEntertainerById} = require('./controllers/entertainersControllers')
-const { postBookings, getAllBookings, getBookingById } = require('./controllers/bookingsControllers')
+const {
+  getEntertainers,
+  getEntertainerById,
+  patchEntertainerById
+} = require("./controllers/entertainersControllers");
+const { 
+  postBookings, 
+  getAllBookings, 
+  getBookingById 
+} = require("./controllers/bookingsControllers");
 
 dotenv.config();
 
@@ -13,38 +21,32 @@ const registrationRoutes = require("./routes/registrationRoute");
 const usersRoute = require("./routes/usersRoute");
 const { getLocations } = require("./controllers/locationsControllers");
 const { getCategories } = require("./controllers/categoriesControllers");
-const { getEndpoints }  = require("./controllers/endpointsControllers")
-
+const { getEndpoints } = require("./controllers/endpointsControllers");
 
 const app = express();
 
-//Middleware
-app.use(express.json()); 
+// Middleware
+app.use(express.json());
 app.use(cors());
 
-//Routes
+// Routes
 app.use("/api", uploadRoutes);
 app.use("/api", authRoutes);
 app.use("/api", registrationRoutes);
 app.use("/api", usersRoute);
 
-
-app.get('/api/entertainers', getEntertainers)
-app.get('/api/entertainers/:user_id', getEntertainerById)
+app.get("/api/entertainers", getEntertainers);
+app.get("/api/entertainers/:user_id", getEntertainerById);
 app.get('/api/bookings', getAllBookings);
 app.get('/api/bookings/:booking_id', getBookingById);
-
 app.post('/api/bookings', postBookings)
-
 app.patch('/api/entertainers/:user_id', patchEntertainerById)
-
 app.get('/api/locations', getLocations)
 app.get('/api/categories', getCategories)
 
+app.get("/api", getEndpoints);
 
-app.get('/api', getEndpoints)
-
-//Error handling middleware
+// Error handling middleware
 app.use((err, req, res, next) => {
   if (err.msg) {
     res.status(err.status).send({ msg: err.msg });
@@ -56,7 +58,7 @@ app.use((err, req, res, next) => {
   }
 });
 
-//Catch-all for unknown routes
+// Catch-all for unknown routes
 app.all("*", (req, res) => {
   res.status(404).send({ msg: "404: route not found" });
 });
