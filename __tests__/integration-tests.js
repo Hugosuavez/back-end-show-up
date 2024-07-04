@@ -392,7 +392,7 @@ describe("GET /api/locations", () => {
       .get("/api/locations")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toHaveLength(2);
+        expect(body).toHaveLength(7);
         body.forEach((location) => {
           expect(location).toMatchObject({
             location: expect.any(String),
@@ -408,7 +408,7 @@ describe("GET /api/categories", () => {
       .get("/api/categories")
       .expect(200)
       .then(({ body }) => {
-        expect(body).toHaveLength(2);
+        expect(body).toHaveLength(5);
         body.forEach((category) => {
           expect(category).toMatchObject({
             category: expect.any(String),
@@ -564,6 +564,146 @@ describe("GET /api/bookings/:booking_id", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("400: Bad Request");
+      });
+  });
+});
+
+describe("PATCH /api/entertainers/:user_id", () => {
+  const userId = 1;
+
+  test("PATCH:200 updates category", () => {
+    const patchObj = { category: "Violinist" };
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.entertainer.category).toBe(patchObj.category);
+      });
+  });
+
+  test("PATCH:200 updates location", () => {
+    const patchObj = { location: "Liverpool" };
+
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.entertainer.location).toBe(patchObj.location);
+      });
+  });
+
+  test("PATCH:200 updates entertainer_name", () => {
+    const patchObj = { entertainer_name: "Gareth Southgate" };
+
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.entertainer.entertainer_name).toBe(
+          patchObj.entertainer_name
+        );
+      });
+  });
+
+  test("PATCH:200 updates description", () => {
+    const patchObj = {
+      description:
+        "a respected English football manager and former player known for my calm demeanor, tactical acumen, and dedication to nurturing young talent.",
+    };
+
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.entertainer.description).toBe(patchObj.description);
+      });
+  });
+
+  test("PATCH:200 updates price", () => {
+    const patchObj = { price: 850 };
+
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.entertainer.price).toBe(patchObj.price);
+      });
+  });
+
+  test("PATCH:200 updates email", () => {
+    const patchObj = { email: "gareth.southgate@england.com" };
+
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.entertainer.email).toBe(patchObj.email);
+      });
+  });
+
+  test("PATCH:400 returns error for incorrect type in body", () => {
+    const patchObj = {
+      price: "850",
+      description: 231,
+      entertainer_name: 123,
+      location: 2331,
+      category: 12312,
+    };
+
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.error).toMatchObject({
+          price: "Incorrect data type",
+          description: "Incorrect data type",
+          entertainer_name: "Incorrect data type",
+          location: "Incorrect data type",
+          category: "Incorrect data type",
+        });
+      });
+  });
+  test("PATCH:400 returns error for unknown location", () => {
+    const patchObj = { location: "Glasgow" };
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.error).toMatchObject({
+          location: "This location is COMING SOON!",
+        });
+      });
+  });
+  test("PATCH:400 returns error for unknown location", () => {
+    const patchObj = { location: "Glasgow" };
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.error).toMatchObject({
+          location: "This location is COMING SOON!",
+        });
+      });
+  });
+  test("PATCH:400 returns error for unknown category", () => {
+    const patchObj = { category: "Motorist" };
+    return request(app)
+      .patch(`/api/entertainers/${userId}`)
+      .send(patchObj)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.error).toMatchObject({
+          location: "This category is COMING SOON!",
+        });
       });
   });
 });
