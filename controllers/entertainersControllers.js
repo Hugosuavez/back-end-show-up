@@ -37,7 +37,6 @@ exports.getEntertainers = async (req, res, next) => {
 
 exports.getEntertainerById = (req, res, next) => {
   const { user_id } = req.params;
-
   Promise.all([fetchEntertainerById(user_id)])
     .then(([entertainer]) => {
       if (entertainer) {

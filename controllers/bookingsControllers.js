@@ -10,8 +10,8 @@ exports.getAllBookings = (req, res, next) => {
 };
 
 exports.getBookingById = (req, res, next) => {
-  const { bookingId } = req.params;
-  fetchBookingById(bookingId)
+  const { booking_id } = req.params;
+  fetchBookingById(booking_id)
     .then((booking) => {
       res.status(200).send({ booking });
     })
