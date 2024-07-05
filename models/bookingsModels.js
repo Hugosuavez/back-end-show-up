@@ -1,11 +1,11 @@
 const db = require('../db/connection');
 
-exports.addBookings = (user_id, entertainer_id, booking_date, event_details, address) => {
+exports.addBookings = (user_id, entertainer_id, booking_date, event_date, event_details, address) => {
     return db.query(`
-        INSERT INTO bookings (user_id, entertainer_id, booking_date, event_details, address)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO bookings (user_id, entertainer_id, booking_date, event_date, event_details, address)
+        VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING *
-    `, [user_id, entertainer_id, booking_date, event_details, address])
+    `, [user_id, entertainer_id, booking_date, event_date, event_details, address])
     .then((result) => {
         return result.rows[0]
     }); 
@@ -14,7 +14,7 @@ exports.addBookings = (user_id, entertainer_id, booking_date, event_details, add
 exports.fetchAllBookings = () => {
   return db
     .query(
-      `SELECT booking_id, user_id, entertainer_id, booking_date, event_details, address FROM bookings;`
+      `SELECT booking_id, user_id, entertainer_id, booking_date, event_date, event_details, address FROM bookings;`
     )
     .then(({ rows }) => {
       return rows;
@@ -24,7 +24,7 @@ exports.fetchAllBookings = () => {
 exports.fetchBookingById = (bookingId) => {
   return db
     .query(
-      `SELECT booking_id, user_id, entertainer_id, booking_date, event_details, address FROM bookings WHERE booking_id = $1;`,
+      `SELECT booking_id, user_id, entertainer_id, booking_date, event_date, event_details, address FROM bookings WHERE booking_id = $1;`,
       [bookingId]
     )
     .then(({ rows }) => {

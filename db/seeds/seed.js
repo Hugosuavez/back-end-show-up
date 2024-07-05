@@ -98,6 +98,7 @@ const seed = ({
             user_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
             entertainer_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
             booking_date TIMESTAMPTZ NOT NULL,
+            event_date VARCHAR NOT NULL,
             event_details VARCHAR NOT NULL,
             address VARCHAR NOT NULL
             );`);
@@ -106,7 +107,7 @@ const seed = ({
       return db.query(`CREATE TABLE payments (
             id SERIAL PRIMARY KEY,
             total_amount INT NOT NULL,
-            date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            booking_date TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
             payee INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
             recipient INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE
             );`);
@@ -191,18 +192,20 @@ const seed = ({
     })
     .then(() => {
       const insertBookingsQueryStr = format(
-        "INSERT INTO bookings (user_id, entertainer_id, booking_date, event_details, address) VALUES %L",
+        "INSERT INTO bookings (user_id, entertainer_id, booking_date, event_date, event_details, address) VALUES %L",
         bookingsData.map(
           ({
             client_id,
             entertainer_id,
             booking_date,
+            event_date,
             event_details,
             address,
           }) => [
             client_id,
             entertainer_id,
             booking_date,
+            event_date,
             event_details,
             address,
           ]
