@@ -9,7 +9,8 @@
     "seed": "node ./db/seeds/run-seed.js",
     "start": "node listen.js",
     "seed-prod": "NODE_ENV=production npm run seed",
-    "playground": "psql -f psql-playground.sql > psql-text-playground.txt"
+    "playground": "psql -f psql-playground.sql > psql-text-playground.txt",
+    "prepare": "husky install"
   },
   "lint-staged": {
     "*.js": "npm test"
@@ -25,6 +26,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "husky": "^9.0.11",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.12.0",
     "postgres": "^3.4.4"
