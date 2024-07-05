@@ -461,6 +461,7 @@ describe("POST /api/bookings", () => {
       user_id: 1,
       entertainer_id: 2,
       booking_date: new Date().toISOString(),
+      event_date: "2024-07-01",
       event_details: "Leaving Drinks",
       address: "Upper Ground, London",
     };
@@ -470,9 +471,10 @@ describe("POST /api/bookings", () => {
       .send(newBooking)
       .expect(201)
       .then(({ body }) => {
-        expect(Object.keys(body.booking)).toHaveLength(6);
+        expect(Object.keys(body.booking)).toHaveLength(7);
         expect(body.booking.user_id).toBe(newBooking.user_id);
         expect(body.booking.entertainer_id).toBe(newBooking.entertainer_id);
+        expect(body.booking.event_date).toBe(newBooking.event_date);
         expect(body.booking.booking_date).toBe(newBooking.booking_date);
         expect(body.booking.event_details).toBe(newBooking.event_details);
         expect(body.booking.address).toBe(newBooking.address);
@@ -483,6 +485,7 @@ describe("POST /api/bookings", () => {
       user_id: 1,
       entertainer_id: 2,
       booking_date: new Date().toISOString(),
+      event_date: "2024-07-01",
       event_details: "Leaving Drinks",
       address: "Upper Ground, London",
     };
@@ -500,6 +503,7 @@ describe("POST /api/bookings", () => {
       user_id: 1,
       entertainer_id: 2,
       booking_date: 77,
+      event_date: 77,
       event_details: 78,
       address: "Upper Ground, London",
     };
@@ -518,6 +522,7 @@ describe("GET /api/bookings", () => {
             user_id: expect.any(Number),
             entertainer_id: expect.any(Number),
             booking_date: expect.any(String),
+            event_date: expect.any(String),
             event_details: expect.any(String),
             address: expect.any(String),
           });
@@ -545,6 +550,7 @@ describe("GET /api/bookings/:booking_id", () => {
           user_id: expect.any(Number),
           entertainer_id: expect.any(Number),
           booking_date: expect.any(String),
+          event_date: expect.any(String),
           event_details: expect.any(String),
           address: expect.any(String),
         });
