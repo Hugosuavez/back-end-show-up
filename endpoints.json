@@ -75,5 +75,47 @@
       "event_details": "Leaving Drinks",
       "address": "Upper Ground, London"
     }
+  },
+  "GET /api/bookings": {
+    "description": "gets all bookings",
+    "queries": [],
+    "exampleResponse": [
+      {
+        "client_id": 1,
+        "entertainer_id": 1,
+        "booking_date": "2024-07-01",
+        "event_details": "Birthday",
+        "address": "123 Main St, London"
+      }
+    ]
+  },
+  "GET /api/bookings/:booking_id": {
+    "description": "serves an bookings object based on specified booking_id",
+    "queries": [],
+    "exampleResponse":      {
+      "client_id": 1,
+      "entertainer_id": 1,
+      "booking_date": "2024-07-01",
+      "event_details": "Birthday",
+      "address": "123 Main St, London"
+    }
+  },
+  "PATCH /api/entertainers/:user_id": {
+    "description": "updates a entertainers information based on its user_id",
+    "queries": [],
+    "patchObject": {
+         "description":
+        "a respected English football manager and former player known for my calm demeanor, tactical acumen, and dedication to nurturing young talent."
+    },
+    "exampleResponse": {
+      "description":
+        "a respected English football manager and former player known for my calm demeanor, tactical acumen, and dedication to nurturing young talent."
+    }
+  },
+  "DELETE /api/entertainers/:user_id": {
+    "description": "deletes an entertainer based on its user_id",
+    "queries": [],
+    "exampleResponse": 
+      {  }
   }
 }

@@ -5,7 +5,8 @@ const dotenv = require("dotenv");
 const {
   getEntertainers,
   getEntertainerById,
-  patchEntertainerById
+  patchEntertainerById,
+  deleteEntertainers
 } = require("./controllers/entertainersControllers");
 const { 
   postBookings, 
@@ -45,6 +46,7 @@ app.post('/api/bookings', postBookings)
 app.patch('/api/entertainers/:user_id', patchEntertainerById)
 app.get('/api/locations', getLocations)
 app.get('/api/categories', getCategories)
+app.delete('/api/entertainers/:user_id', deleteEntertainers)
 
 app.get("/api", getEndpoints);
 

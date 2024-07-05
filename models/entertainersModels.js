@@ -99,3 +99,19 @@ exports.updateEntertainersById = (user_id, category, location, entertainer_name,
       return result.rows[0]
     });
 }
+
+exports.selectDeleteUser = (user_id) => {
+  return db.query(
+      `DELETE FROM users 
+       WHERE user_id = $1 
+       RETURNING *;`,
+      [user_id]
+  )
+  .then((result) => {
+    if (result.rowCount === 0) {
+      return Promise.reject(
+     { status: 404, 
+     msg: `404: route not found` });
+     }
+ });
+};
