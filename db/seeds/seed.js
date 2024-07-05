@@ -115,7 +115,7 @@ const seed = ({
       return db.query(`CREATE TABLE availability (
             availability_id SERIAL PRIMARY KEY,
             entertainer_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-            date DATE NOT NULL,
+            date VARCHAR NOT NULL,
             available BOOLEAN
             );`);
     })

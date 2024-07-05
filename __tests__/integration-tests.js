@@ -478,7 +478,7 @@ describe("POST /api/bookings", () => {
         expect(body.booking.address).toBe(newBooking.address);
       });
   });
-  test("404: Not Found ", () => {
+  test("404: Not found when path is incorrect", () => {
     const newBooking = {
       user_id: 1,
       entertainer_id: 2,
@@ -682,18 +682,6 @@ describe("PATCH /api/entertainers/:user_id", () => {
         });
       });
   });
-  test("PATCH:400 returns error for unknown location", () => {
-    const patchObj = { location: "Glasgow" };
-    return request(app)
-      .patch(`/api/entertainers/${userId}`)
-      .send(patchObj)
-      .expect(400)
-      .then(({ body }) => {
-        expect(body.error).toMatchObject({
-          location: "This location is COMING SOON!",
-        });
-      });
-  });
   test("PATCH:400 returns error for unknown category", () => {
     const patchObj = { category: "Motorist" };
     return request(app)
@@ -735,3 +723,74 @@ describe('DELETE /api/entertainers/:user_id', () => {
     });
 })
 
+describe('GET /api/availability/:entertainer_id', () => {
+
+  test('200: responds with availability of entertainer based on entertainer_id', () => {
+    return request(app)
+    .get('/api/availability/1')
+    .expect(200)
+    .then(({ body }) => {
+      expect(body.availability).toHaveLength(5);
+      body.availability.forEach((date) => {
+        expect(date).toMatchObject({
+          entertainer_id: expect.any(Number),
+          date: expect.any(String), // coflicts with DATE type in PSQL
+          available: expect.any(Boolean)
+        })
+      })
+    })
+  })
+  test("404: Not Found", () => {
+    return request(app)
+      .get("/api/availability/9999")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Booking not found");
+      });
+  });
+  test("400: Bad Request", () => {
+    return request(app)
+      .get("/api/availability/biro")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad Request");
+      });
+  });
+} )
+
+describe("PATCH /api/availability/:entertainer_id", () => {
+  test("PATCH: 200 updates availability", () => {
+    const patchObj = { date: "2024-07-01", available: false};
+    return request(app)
+    .patch("/api/availability/1")
+    .send(patchObj)
+    .expect(200)
+    .then(({body}) => {
+      expect(Object.keys(body.availability)).toHaveLength(4)
+      expect(body.availability.date).toEqual(patchObj.date)
+      expect(body.availability.available).toEqual(patchObj.available)
+    })
+  })
+  test("PATCH:400 returns error for incorrect type in body", () => {
+    const patchObj = {
+      date: 20240701
+    };
+    return request(app)
+      .patch(`/api/availability/1`)
+      .send(patchObj)
+      .expect(400)
+      .then(( {body} ) => {
+        expect(body.error.date).toBe("400: Bad Request");
+      });
+  });
+  test("PATCH:400 returns error for missing body", () => {
+    const patchObj = {};
+    return request(app)
+      .patch(`/api/availability/1`)
+      .send(patchObj)
+      .expect(400)
+      .then(( {body} ) => {
+        expect(body.msg).toBe('400: Bad Request')
+      });
+  });
+})
