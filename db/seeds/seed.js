@@ -79,15 +79,15 @@ const seed = ({
       return db.query(`CREATE TABLE userMedia (
             media_id SERIAL PRIMARY KEY,
             url VARCHAR NOT NULL,
-            user_id INT NOT NULL REFERENCES users(user_id),
+            user_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );`);
     })
     .then(() => {
       return db.query(`CREATE TABLE messages (
             message_id SERIAL PRIMARY KEY,
-            sender_id INT NOT NULL REFERENCES users(user_id),
-            recipient_id INT NOT NULL REFERENCES users(user_id),
+            sender_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE ,
+            recipient_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
             message TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );`);
@@ -95,8 +95,8 @@ const seed = ({
     .then(() => {
       return db.query(`CREATE TABLE bookings (
             booking_id SERIAL PRIMARY KEY,
-            user_id INT NOT NULL REFERENCES users(user_id),
-            entertainer_id INT NOT NULL REFERENCES users(user_id),
+            user_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+            entertainer_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
             booking_date TIMESTAMPTZ NOT NULL,
             event_details VARCHAR NOT NULL,
             address VARCHAR NOT NULL
@@ -107,14 +107,14 @@ const seed = ({
             id SERIAL PRIMARY KEY,
             total_amount INT NOT NULL,
             date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            payee INT NOT NULL REFERENCES users(user_id),
-            recipient INT NOT NULL REFERENCES users(user_id)
+            payee INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+            recipient INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE
             );`);
     })
     .then(() => {
       return db.query(`CREATE TABLE availability (
             availability_id SERIAL PRIMARY KEY,
-            entertainer_id INT NOT NULL REFERENCES users(user_id),
+            entertainer_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
             date DATE NOT NULL,
             available BOOLEAN
             );`);

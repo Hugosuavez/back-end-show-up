@@ -707,3 +707,31 @@ describe("PATCH /api/entertainers/:user_id", () => {
       });
   });
 });
+
+describe('DELETE /api/entertainers/:user_id', () => {
+  test('DELETE:204 deletes the user stated in the user id', () => { 
+      const userId = 1;
+      return request(app)
+      .delete(`/api/entertainers/${userId}`)
+      .expect(204)
+  })
+  test('DELETE:404 sends an appropriate status and error message when given a valid but non-existent id', () => {
+      const userId = 9292;
+      return request(app)
+      .delete(`/api/entertainers/${userId}`)
+        .expect(404)
+        .then((response) => {
+          expect(response.body.msg).toBe(`404: route not found`);
+    });
+    });
+    test('DELETE:400 sends an appropriate status and error message when given an invalid user id', () => {
+      const userId = "Thats all right with me ";
+      return request(app)
+      .delete(`/api/entertainers/${userId}`)
+        .expect(400)
+        .then((response) => {
+          expect(response.body.msg).toBe('400: Bad Request');
+        });
+    });
+})
+

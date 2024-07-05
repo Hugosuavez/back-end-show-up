@@ -4,6 +4,7 @@ const {
   fetchEntertainerById,
   fetchUserMediaByUserId,
   updateEntertainersById,
+  selectDeleteUser
 } = require("../models/entertainersModels");
 const { checkLocationIsValid } = require("../models/locationsModels");
 
@@ -118,4 +119,12 @@ exports.patchEntertainerById = (req, res, next) => {
       res.status(200).json({ entertainer: updatedEntertainer });
     })
     .catch(next);
+};
+
+exports.deleteEntertainers = (req, res, next) => {
+  const { user_id } = req.params;
+  selectDeleteUser(user_id).then((entertainer) => {
+    res.status(204).send({ entertainer })
+  })
+  .catch(next);
 };
