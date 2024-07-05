@@ -117,5 +117,26 @@
     "queries": [],
     "exampleResponse": 
       {  }
+  },
+  "GET /api/availability/:entertainer_id": {
+    "description": "gets an entertainers availability when given its ID",
+    "queries": [],
+    "exampleResponse": {
+      "entertainer_id": 1,
+      "date": "2024-07-01",
+      "available": true
+    }
+  },
+  "PATCH /api/availability/:entertainer_id": {
+    "description": "updates the availabilty of an entertainer when given its ID",
+    "queries": [],
+    "patchObject": {
+      "date": "2024-07-01", "available": false
+    },
+    "exampleResponse": {
+      "entertainer_id": 1,
+      "date": "2024-07-01",
+      "available": false
+    }
   }
-}
+} 
