@@ -63,7 +63,7 @@
     "requestBodyFormat": {
       "user_id": 1,
       "entertainer_id": 2,
-      "booking_date": "new Date().toISOString()",
+      "event_date": "2024-07-01",
       "event_details": "Leaving Drinks",
       "address": "Upper Ground, London"
     },
@@ -72,20 +72,25 @@
       "user_id": 1,
       "entertainer_id": 2,
       "booking_date": "2024-07-03T16:05:12.032Z",
+      "event_date": "2024-07-01",
       "event_details": "Leaving Drinks",
-      "address": "Upper Ground, London"
+      "address": "Upper Ground, London",
+      "status": "pending"
     }
   },
   "GET /api/bookings": {
     "description": "gets all bookings",
     "queries": [],
     "exampleResponse": [
-      {
-        "client_id": 1,
+      { 
+        "booking_id": 1,
+        "user_id": 1,
         "entertainer_id": 1,
-        "booking_date": "2024-07-01",
+        "booking_date": "2024-06-30T23:00:00.000Z",
+        "event_date": "2024-07-01",
         "event_details": "Birthday",
-        "address": "123 Main St, London"
+        "address": "123 Main St, London",
+        "status": "pending"
       }
     ]
   },
@@ -93,11 +98,14 @@
     "description": "serves an bookings object based on specified booking_id",
     "queries": [],
     "exampleResponse":      {
-      "client_id": 1,
-      "entertainer_id": 1,
-      "booking_date": "2024-07-01",
-      "event_details": "Birthday",
-      "address": "123 Main St, London"
+     "booking_id": 1,
+        "user_id": 1,
+        "entertainer_id": 1,
+        "booking_date": "2024-06-30T23:00:00.000Z",
+        "event_date": "2024-07-01",
+        "event_details": "Birthday",
+        "address": "123 Main St, London",
+        "status": "pending"
     }
   },
   "PATCH /api/entertainers/:user_id": {
