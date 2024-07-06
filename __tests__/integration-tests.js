@@ -805,7 +805,7 @@ describe("PATCH /api/availability/:entertainer_id", () => {
 })
 
 
-describe.only(('GET /api/customer-bookings/:user_id'), () => {
+describe(('GET /api/customer-bookings/:user_id'), () => {
   test('200: responds with array of bookings for selected user', () => {
     return request(app)
     .get('/api/customer-bookings/1')
@@ -847,7 +847,7 @@ describe.only(('GET /api/customer-bookings/:user_id'), () => {
   }) 
 
 
-  describe.only(('GET /api/entertainer-bookings/:entertainer_id'), () => {
+  describe(('GET /api/entertainer-bookings/:entertainer_id'), () => {
     test('200: responds with array of bookings for selected entertainer', () => {
       return request(app)
       .get('/api/entertainer-bookings/1')
