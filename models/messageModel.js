@@ -60,7 +60,7 @@ exports.fetchConversationsWith = (conversationsWithUsername, userId) => {
         (u1.username = $1 AND m.recipient_id = $2)
         OR (u2.username = $1 AND m.sender_id = $2)
       ORDER BY 
-        m.message_id ASC;
+        m.created_at ASC;
     `, [conversationsWithUsername, userId])
     .then(({ rows }) => {
       return rows;
