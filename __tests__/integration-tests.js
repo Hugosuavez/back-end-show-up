@@ -512,11 +512,12 @@ describe("POST /api/bookings", () => {
 });
 
 describe("GET /api/bookings", () => {
-  test("200: responds with an array objects with correct properties", () => {
+  test.only("200: responds with an array objects with correct properties", () => {
     return request(app)
       .get("/api/bookings")
       .expect(200)
       .then(({ body }) => {
+        console.log(body.bookings)
         expect(body.bookings).toHaveLength(2);
         body.bookings.forEach((booking) => {
           expect(booking).toMatchObject({

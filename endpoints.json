@@ -63,7 +63,7 @@
     "requestBodyFormat": {
       "user_id": 1,
       "entertainer_id": 2,
-      "booking_date": "new Date().toISOString()",
+      "event_date": "2024-07-01",
       "event_details": "Leaving Drinks",
       "address": "Upper Ground, London"
     },
@@ -72,20 +72,25 @@
       "user_id": 1,
       "entertainer_id": 2,
       "booking_date": "2024-07-03T16:05:12.032Z",
+      "event_date": "2024-07-01",
       "event_details": "Leaving Drinks",
-      "address": "Upper Ground, London"
+      "address": "Upper Ground, London",
+      "status": "pending"
     }
   },
   "GET /api/bookings": {
     "description": "gets all bookings",
     "queries": [],
     "exampleResponse": [
-      {
-        "client_id": 1,
+      { 
+        "booking_id": 1,
+        "user_id": 1,
         "entertainer_id": 1,
-        "booking_date": "2024-07-01",
+        "booking_date": "2024-06-30T23:00:00.000Z",
+        "event_date": "2024-07-01",
         "event_details": "Birthday",
-        "address": "123 Main St, London"
+        "address": "123 Main St, London",
+        "status": "pending"
       }
     ]
   },
@@ -93,11 +98,14 @@
     "description": "serves an bookings object based on specified booking_id",
     "queries": [],
     "exampleResponse":      {
-      "client_id": 1,
-      "entertainer_id": 1,
-      "booking_date": "2024-07-01",
-      "event_details": "Birthday",
-      "address": "123 Main St, London"
+     "booking_id": 1,
+        "user_id": 1,
+        "entertainer_id": 1,
+        "booking_date": "2024-06-30T23:00:00.000Z",
+        "event_date": "2024-07-01",
+        "event_details": "Birthday",
+        "address": "123 Main St, London",
+        "status": "pending"
     }
   },
   "PATCH /api/entertainers/:user_id": {
@@ -121,11 +129,12 @@
   "GET /api/availability/:entertainer_id": {
     "description": "gets an entertainers availability when given its ID",
     "queries": [],
-    "exampleResponse": {
+    "exampleResponse": [{
+      "availability_id": 1,
       "entertainer_id": 1,
       "date": "2024-07-01",
       "available": true
-    }
+    }]
   },
   "PATCH /api/availability/:entertainer_id": {
     "description": "updates the availabilty of an entertainer when given its ID",
@@ -134,9 +143,62 @@
       "date": "2024-07-01", "available": false
     },
     "exampleResponse": {
+      "availability_id": 1,
       "entertainer_id": 1,
       "date": "2024-07-01",
       "available": false
+    }
+  },
+  "GET api/customer-bookings/:user_id": {
+    "description": "gets a customers bookings when given their ID",
+    "headers": {"Authorization": "JWT Token"},
+    "queries": [],
+    "exampleResponse": [{
+        "booking_id": 1,
+        "user_id": 1,
+        "entertainer_id": 1,
+        "booking_date": "2024-06-30T23:00:00.000Z",
+        "event_date": "2024-07-01",
+        "event_details": "Birthday",
+        "address": "123 Main St, London",
+        "status": "pending"
+    }]
+  },
+  "GET api/entertainer-bookings/:user_id": {
+    "description": "gets an entertainers bookings when given their ID",
+    "headers": {"Authorization": "JWT Token"},
+    "queries": [],
+    "exampleResponse": [{
+        "booking_id": 1,
+        "user_id": 1,
+        "entertainer_id": 1,
+        "booking_date": "2024-06-30T23:00:00.000Z",
+        "event_date": "2024-07-01",
+        "event_details": "Birthday",
+        "address": "123 Main St, London",
+        "status": "pending"
+    }]
+  },
+  "GET api/me": {
+    "description": "gets a logged in users information",
+    "headers": {"Authorization": "JWT Token"},
+    "queries": [],
+    "exampleResponse": {
+      "user_id": 2,
+      "username": "e_watson",
+      "first_name": "Emma",
+      "last_name": "Watson",
+      "email": "e.watson@gmail.com",
+      "profile_img_url": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Emma_Watson_2013.jpg",
+      "user_type": "Entertainer",
+      "category": "Violinist",
+      "location": "Oxford",
+      "entertainer_name": "Emma the Violin Virtuoso",
+      "description": "A highly skilled violinist with years of experience, Emma delivers soulful and captivating performances. Perfect for weddings, events, and private concerts.",
+      "price": 30,
+      "media": [
+        "https://upload.wikimedia.org/wikipedia/commons/7/7f/Emma_Watson_2013.jpg"
+      ]
     }
   }
 } 

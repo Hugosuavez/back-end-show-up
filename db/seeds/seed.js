@@ -97,7 +97,7 @@ const seed = ({
             booking_id SERIAL PRIMARY KEY,
             user_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
             entertainer_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
-            booking_date TIMESTAMPTZ NOT NULL,
+            booking_date TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP NOT NULL,
             event_date VARCHAR NOT NULL,
             event_details VARCHAR NOT NULL,
             address VARCHAR NOT NULL,
