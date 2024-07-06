@@ -14,7 +14,7 @@ exports.addBookings = (user_id, entertainer_id, booking_date, event_date, event_
 exports.fetchAllBookings = () => {
   return db
     .query(
-      `SELECT booking_id, user_id, entertainer_id, booking_date, event_date, event_details, address FROM bookings;`
+      `SELECT booking_id, user_id, entertainer_id, booking_date, event_date, event_details, address, status FROM bookings;`
     )
     .then(({ rows }) => {
       return rows;
@@ -24,7 +24,7 @@ exports.fetchAllBookings = () => {
 exports.fetchBookingById = (bookingId) => {
   return db
     .query(
-      `SELECT booking_id, user_id, entertainer_id, booking_date, event_date, event_details, address FROM bookings WHERE booking_id = $1;`,
+      `SELECT booking_id, user_id, entertainer_id, booking_date, event_date, event_details, address, status FROM bookings WHERE booking_id = $1;`,
       [bookingId]
     )
     .then(({ rows }) => {
@@ -34,3 +34,21 @@ exports.fetchBookingById = (bookingId) => {
       return rows[0];
     });
 };
+
+exports.fetchBookingsByUserId = (user_id) => {
+  return db.query('SELECT * FROM bookings WHERE user_id = $1', [user_id]).then(({rows}) => {
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "id not found" });
+    }
+    return rows
+  })
+}
+
+exports.fetchBookingsByEntertainerId = (entertainer_id) => {
+  return db.query('SELECT * FROM bookings WHERE entertainer_id = $1', [entertainer_id]).then(({rows}) => {
+    if (rows.length === 0) {
+      return Promise.reject({ status: 404, msg: "id not found" });
+    }
+    return rows
+  })
+}

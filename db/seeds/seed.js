@@ -100,7 +100,8 @@ const seed = ({
             booking_date TIMESTAMPTZ NOT NULL,
             event_date VARCHAR NOT NULL,
             event_details VARCHAR NOT NULL,
-            address VARCHAR NOT NULL
+            address VARCHAR NOT NULL,
+            status VARCHAR(20) DEFAULT 'pending'
             );`);
     })
     .then(() => {
@@ -192,7 +193,7 @@ const seed = ({
     })
     .then(() => {
       const insertBookingsQueryStr = format(
-        "INSERT INTO bookings (user_id, entertainer_id, booking_date, event_date, event_details, address) VALUES %L",
+        "INSERT INTO bookings (user_id, entertainer_id, booking_date, event_date, event_details, address, status) VALUES %L",
         bookingsData.map(
           ({
             client_id,
@@ -201,6 +202,7 @@ const seed = ({
             event_date,
             event_details,
             address,
+            status
           }) => [
             client_id,
             entertainer_id,
@@ -208,6 +210,7 @@ const seed = ({
             event_date,
             event_details,
             address,
+            status
           ]
         )
       );
