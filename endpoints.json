@@ -178,5 +178,27 @@
         "address": "123 Main St, London",
         "status": "pending"
     }]
+  },
+  "GET api/me": {
+    "description": "gets a logged in users information",
+    "headers": {"Authorization": "JWT Token"},
+    "queries": [],
+    "exampleResponse": {
+      "user_id": 2,
+      "username": "e_watson",
+      "first_name": "Emma",
+      "last_name": "Watson",
+      "email": "e.watson@gmail.com",
+      "profile_img_url": "https://upload.wikimedia.org/wikipedia/commons/7/7f/Emma_Watson_2013.jpg",
+      "user_type": "Entertainer",
+      "category": "Violinist",
+      "location": "Oxford",
+      "entertainer_name": "Emma the Violin Virtuoso",
+      "description": "A highly skilled violinist with years of experience, Emma delivers soulful and captivating performances. Perfect for weddings, events, and private concerts.",
+      "price": 30,
+      "media": [
+        "https://upload.wikimedia.org/wikipedia/commons/7/7f/Emma_Watson_2013.jpg"
+      ]
+    }
   }
 } 
