@@ -11,7 +11,9 @@ const {
 const { 
   postBookings, 
   getAllBookings, 
-  getBookingById 
+  getBookingById,
+  getBookingsByUserId ,
+  getBookingsByEntertainerId
 } = require("./controllers/bookingsControllers");
 const { getAvailability, patchAvailability } = require('./controllers/availabilityControllers')
 
@@ -25,6 +27,7 @@ const messageRoute = require("./routes/messageRoute");
 const { getLocations } = require("./controllers/locationsControllers");
 const { getCategories } = require("./controllers/categoriesControllers");
 const { getEndpoints } = require("./controllers/endpointsControllers");
+const { authenticateJWT } = require("./controllers/authController");
 
 const app = express();
 
@@ -50,6 +53,10 @@ app.get('/api/categories', getCategories)
 app.delete('/api/entertainers/:user_id', deleteEntertainers)
 app.get('/api/availability/:entertainer_id', getAvailability)
 app.patch('/api/availability/:entertainer_id', patchAvailability)
+
+app.get('/api/customer-bookings/:user_id', authenticateJWT, getBookingsByUserId)
+app.get('/api/entertainer-bookings/:entertainer_id', authenticateJWT, getBookingsByEntertainerId)
+
 
 app.get("/api", getEndpoints);
 

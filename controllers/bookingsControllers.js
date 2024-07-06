@@ -1,4 +1,4 @@
-const { addBookings, fetchAllBookings, fetchBookingById } = require('../models/bookingsModels');
+const { addBookings, fetchAllBookings, fetchBookingById, fetchBookingsByUserId, fetchBookingsByEntertainerId } = require('../models/bookingsModels');
 
 
 exports.getAllBookings = (req, res, next) => {
@@ -10,7 +10,7 @@ exports.getAllBookings = (req, res, next) => {
 };
 
 exports.getBookingById = (req, res, next) => {
-  const { booking_id } = req.params;
+  const {booking_id} = req.params
   fetchBookingById(booking_id)
     .then((booking) => {
       res.status(200).send({ booking });
@@ -35,3 +35,22 @@ exports.postBookings = (req, res, next) => {
         })
         .catch(next);
 };
+
+
+exports.getBookingsByUserId = (req, res, next) => {
+ const {user_id} = req.params
+
+ fetchBookingsByUserId(user_id).then((bookings) => {
+  res.status(200).send({bookings})
+ })
+ .catch(next)
+}
+
+exports.getBookingsByEntertainerId = (req, res, next) => {
+  const {entertainer_id} = req.params
+ 
+  fetchBookingsByEntertainerId(entertainer_id).then((bookings) => {
+   res.status(200).send({bookings})
+  })
+  .catch(next)
+ }

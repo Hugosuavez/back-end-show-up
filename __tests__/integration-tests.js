@@ -471,13 +471,14 @@ describe("POST /api/bookings", () => {
       .send(newBooking)
       .expect(201)
       .then(({ body }) => {
-        expect(Object.keys(body.booking)).toHaveLength(7);
+        expect(Object.keys(body.booking)).toHaveLength(8);
         expect(body.booking.user_id).toBe(newBooking.user_id);
         expect(body.booking.entertainer_id).toBe(newBooking.entertainer_id);
         expect(body.booking.event_date).toBe(newBooking.event_date);
         expect(body.booking.booking_date).toBe(newBooking.booking_date);
         expect(body.booking.event_details).toBe(newBooking.event_details);
         expect(body.booking.address).toBe(newBooking.address);
+        expect(body.booking.status).toBe('pending')
       });
   });
   test("404: Not found when path is incorrect", () => {
@@ -525,6 +526,7 @@ describe("GET /api/bookings", () => {
             event_date: expect.any(String),
             event_details: expect.any(String),
             address: expect.any(String),
+            status: expect.any(String)
           });
         });
       });
@@ -553,6 +555,7 @@ describe("GET /api/bookings/:booking_id", () => {
           event_date: expect.any(String),
           event_details: expect.any(String),
           address: expect.any(String),
+          status: expect.any(String)
         });
       });
   });
@@ -800,3 +803,88 @@ describe("PATCH /api/availability/:entertainer_id", () => {
       });
   });
 })
+
+
+describe(('GET /api/customer-bookings/:user_id'), () => {
+  test('200: responds with array of bookings for selected user', () => {
+    return request(app)
+    .get('/api/customer-bookings/1')
+    .set('Authorization', `${token}`)
+    .expect(200)
+    .then(({body}) => {
+      expect(body.bookings).toHaveLength(2)
+      body.bookings.forEach((booking) => {
+        expect(booking).toMatchObject({
+          user_id: 1,
+          entertainer_id: expect.any(Number),
+          booking_date: expect.any(String),
+          event_date: expect.any(String),
+          event_details: expect.any(String),
+          address: expect.any(String),
+          status: expect.any(String)
+        })
+      })
+    })
+  })
+  test("404: Not Found", () => {
+    return request(app)
+      .get("/api/customer-bookings/9999")
+      .set('Authorization', `${token}`)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("id not found");
+      });
+  });
+  test("400: Bad Request", () => {
+    return request(app)
+      .get("/api/customer-bookings/biro")
+      .set('Authorization', `${token}`)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("400: Bad Request");
+      });
+  });
+  }) 
+
+
+  describe(('GET /api/entertainer-bookings/:entertainer_id'), () => {
+    test('200: responds with array of bookings for selected entertainer', () => {
+      return request(app)
+      .get('/api/entertainer-bookings/1')
+      .set('Authorization', `${token}`)
+      .expect(200)
+      .then(({body}) => {
+        expect(body.bookings).toHaveLength(1)
+        body.bookings.forEach((booking) => {
+          expect(booking).toMatchObject({
+            user_id: expect.any(Number),
+            entertainer_id: 1,
+            booking_date: expect.any(String),
+            event_date: expect.any(String),
+            event_details: expect.any(String),
+            address: expect.any(String),
+            status: expect.any(String)
+          })
+        })
+      })
+    })
+    test("404: Not Found", () => {
+      return request(app)
+        .get("/api/entertainer-bookings/9999")
+        .set('Authorization', `${token}`)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("id not found");
+        });
+    });
+    test("400: Bad Request", () => {
+      return request(app)
+        .get("/api/entertainer-bookings/biro")
+        .set('Authorization', `${token}`)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("400: Bad Request");
+        });
+    });
+    }) 
+  
