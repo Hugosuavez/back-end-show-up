@@ -2,27 +2,41 @@ const db = require("../db/connection");
 
 exports.fetchConversations = (userId) => {
   return db
-    .query(
-      `
-      SELECT DISTINCT ON (m.recipient_id)
-        u2.username,
-        u2.first_name,
-        u2.last_name,
-        u2.profile_img_url
-      FROM 
-        messages m
-      JOIN 
-        users u1 ON m.sender_id = u1.user_id
-      JOIN 
-        users u2 ON m.recipient_id = u2.user_id
-      WHERE 
-        m.sender_id = $1 OR m.recipient_id = $1;
-    `,
-      [userId]
-    )
-    .then(({ rows }) => {
-      return rows;
-    });
+  .query(
+    `
+    SELECT DISTINCT 
+      CASE
+        WHEN m.sender_id = $1 THEN u2.username
+        ELSE u1.username
+      END as username,
+      CASE
+        WHEN m.sender_id = $1 THEN u2.first_name
+        ELSE u1.first_name
+      END as first_name,
+      CASE
+        WHEN m.sender_id = $1 THEN u2.last_name
+        ELSE u1.last_name
+      END as last_name,
+      CASE
+        WHEN m.sender_id = $1 THEN u2.profile_img_url
+        ELSE u1.profile_img_url
+      END as profile_img_url
+    FROM 
+      messages m
+    JOIN 
+      users u1 ON m.sender_id = u1.user_id
+    JOIN 
+      users u2 ON m.recipient_id = u2.user_id
+    WHERE 
+      m.sender_id = $1 OR m.recipient_id = $1
+    ORDER BY 
+      username;
+  `,
+    [userId]
+  )
+  .then(({ rows }) => {
+    return rows;
+  });
 };
 
 exports.fetchConversationsWith = (conversationsWithUsername, userId) => {
