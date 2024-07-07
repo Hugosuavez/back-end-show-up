@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { baseUrl, getRequest } from "../utils/services";
+import { baseUrl, getRequest } from "../utils/service";
 
 
 export const useFetchRecipientUser = (chat, user) => {
@@ -9,7 +9,7 @@ export const useFetchRecipientUser = (chat, user) => {
     const recipientId = chat?.members?.find((id) => id !== user?._id);
    
     console.log('chat', chat)
-    console.log('chat.members', chat.members)
+   // console.log('chat?.members', chat.members)
     console.log('recipientid', recipientId)
     
 

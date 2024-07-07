@@ -1,4 +1,4 @@
-const chatModel = require("../models/chatModel");
+const chatModel = require("../Models/chatModel");
 
 const createChat = async (req, res) => {
   const { senderId, receiverId } = req.body;
@@ -28,13 +28,13 @@ const userChats = async (req, res) => {
     const chats = await chatModel.find({
       members: { $in: [userId] },
     });
-    console.log("userchats", userChats);
+
     res.status(200).json(chats);
   } catch (error) {
     res.status(500).json(error);
   }
 };
-console.log("userchats", userChats);
+
 const findChat = async (req, res) => {
   const firstId = req.params.firstId;
   const secondId = req.params.secondId;
