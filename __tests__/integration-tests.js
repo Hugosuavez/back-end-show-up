@@ -455,7 +455,7 @@ describe("GET /api", () => {
   });
 });
 
-describe.only("POST /api/bookings", () => {
+describe("POST /api/bookings", () => {
   test("201: adds a new booking to the bookings list", () => {
     const newBooking = {
       user_id: 1,
@@ -890,4 +890,45 @@ describe(('GET /api/customer-bookings/:user_id'), () => {
     });
     }) 
   
-    // in order to seed
+ describe.only("POST /api/availability", () => {
+      test("201: adds new availability", () => {
+        const newAvailability = {
+          entertainer_id: 2,
+          date: "2024-07-01",
+          available: false
+        };
+    
+        return request(app)
+          .post("/api/availability")
+          .send(newAvailability)
+          .expect(201)
+          .then(({ body }) => {
+            expect(Object.keys(body.availability)).toHaveLength(4);
+            expect(body.availability.entertainer_id).toBe(newAvailability.entertainer_id);
+            expect(body.availability.date).toBe(newAvailability.date);
+            expect(body.availability.available).toBe(newAvailability.available);
+          });
+      });
+      test("404: Not found when path is incorrect", () => {
+        const newAvailability = {
+          entertainer_id: 2,
+          date: "2024-07-01",
+          available: false
+        };
+    
+        return request(app)
+          .post("/api/nonsense")
+          .send(newAvailability)
+          .expect(404)
+          .then(({ body }) => {
+            expect(body.msg).toBe("404: route not found");
+          });
+      });
+      test("400: Bad Request failing schema validation", () => {
+        const newAvailability = {
+          entertainer_id: 2,
+          date: "2024-07-01",
+          available: false
+        };
+      });
+    });
