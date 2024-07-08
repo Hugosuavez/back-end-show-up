@@ -15,7 +15,7 @@ const {
   getBookingsByUserId ,
   getBookingsByEntertainerId
 } = require("./controllers/bookingsControllers");
-const { getAvailability, patchAvailability } = require('./controllers/availabilityControllers')
+const { getAvailability, patchAvailability, postAvailability } = require('./controllers/availabilityControllers')
 
 dotenv.config();
 
@@ -53,6 +53,7 @@ app.get('/api/categories', getCategories)
 app.delete('/api/entertainers/:user_id', deleteEntertainers)
 app.get('/api/availability/:entertainer_id', getAvailability)
 app.patch('/api/availability/:entertainer_id', patchAvailability)
+app.post('/api/availability', postAvailability)
 
 app.get('/api/customer-bookings/:user_id', authenticateJWT, getBookingsByUserId)
 app.get('/api/entertainer-bookings/:entertainer_id', authenticateJWT, getBookingsByEntertainerId)
