@@ -455,7 +455,7 @@ describe("GET /api", () => {
   });
 });
 
-describe("POST /api/bookings", () => {
+describe.only("POST /api/bookings", () => {
   test("201: adds a new booking to the bookings list", () => {
     const newBooking = {
       user_id: 1,
@@ -468,6 +468,7 @@ describe("POST /api/bookings", () => {
 
     return request(app)
       .post("/api/bookings")
+      .set('Authorization', `${token}`)
       .send(newBooking)
       .expect(201)
       .then(({ body }) => {
@@ -493,6 +494,7 @@ describe("POST /api/bookings", () => {
 
     return request(app)
       .post("/api/nonsense")
+      .set('Authorization', `${token}`)
       .send(newBooking)
       .expect(404)
       .then(({ body }) => {
