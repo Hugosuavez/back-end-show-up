@@ -1,4 +1,5 @@
 const { getUserByUsername } = require("../models/usersModel");
+const { fetchUserMediaByUserId } = require("../models/entertainersModels");
 
 exports.getProfile = async (req, res, next) => {
   const { username } = req.user; // username from JWT
@@ -16,7 +17,15 @@ exports.getProfile = async (req, res, next) => {
         delete userWithoutPassword.description;
         delete userWithoutPassword.price;
       }
-      res.status(200).send(userWithoutPassword);
+
+      // Fetch user media
+      const mediaObjects = await fetchUserMediaByUserId(user.user_id);
+      const media = mediaObjects.map((mediaObj) => mediaObj.url);
+
+      // Combine user profile with media
+      const userProfileWithMedia = { ...userWithoutPassword, media };
+
+      res.status(200).send(userProfileWithMedia);
     } else {
       res.status(404).send({ error: "User not found" });
     }
