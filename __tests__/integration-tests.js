@@ -888,3 +888,4 @@ describe(('GET /api/customer-bookings/:user_id'), () => {
     });
     }) 
   
+    // in order to seed
