@@ -13,7 +13,9 @@ const {
   getAllBookings, 
   getBookingById,
   getBookingsByUserId ,
-  getBookingsByEntertainerId
+  getBookingsByEntertainerId,
+  deleteBooking,
+  patchBooking
 } = require("./controllers/bookingsControllers");
 const { getAvailability, patchAvailability, postAvailability } = require('./controllers/availabilityControllers')
 
@@ -54,6 +56,8 @@ app.delete('/api/entertainers/:user_id', deleteEntertainers)
 app.get('/api/availability/:entertainer_id', getAvailability)
 app.patch('/api/availability/:entertainer_id', patchAvailability)
 app.post('/api/availability', postAvailability)
+app.delete('/api/bookings/:booking_id', deleteBooking);
+app.patch('/api/bookings/:booking_id', patchBooking)
 
 app.get('/api/customer-bookings/:user_id', authenticateJWT, getBookingsByUserId)
 app.get('/api/entertainer-bookings/:entertainer_id', authenticateJWT, getBookingsByEntertainerId)
