@@ -890,7 +890,7 @@ describe(('GET /api/customer-bookings/:user_id'), () => {
     });
     }) 
   
- describe.only("POST /api/availability", () => {
+ describe("POST /api/availability", () => {
       test("201: adds new availability", () => {
         const newAvailability = {
           entertainer_id: 2,
@@ -932,3 +932,64 @@ describe(('GET /api/customer-bookings/:user_id'), () => {
         };
       });
     });
+
+ describe('DELETE /api/bookings/:booking_id', () => {
+      test('DELETE:204 deletes the booking stated in the booking id', () => { 
+          const booking_id = 2;
+          return request(app)
+          .delete(`/api/bookings/${booking_id}`)
+          .expect(204)
+      })
+      test('DELETE:404 sends an appropriate status and error message when given a valid but non-existent id', () => {
+        const booking_id = 7868848;
+          return request(app)
+          .delete(`/api/bookings/${booking_id}`)
+            .expect(404)
+            .then((response) => {
+              expect(response.body.msg).toBe(`404: route not found`);
+        });
+        });
+        test('DELETE:400 sends an appropriate status and error message when given an invalid user id', () => {
+          const booking_id = "Thats all right with me ";
+          return request(app)
+          .delete(`/api/bookings/${booking_id}`)
+            .expect(400)
+            .then((response) => {
+              expect(response.body.msg).toBe('400: Bad Request');
+            });
+        });
+    })
+
+    describe("PATCH /api/bookings/:booking_id", () => {
+      test("PATCH: 200 updates booking", () => {
+        const patchObj = { status: "confirmed"};
+        return request(app)
+        .patch("/api/bookings/2")
+        .send(patchObj)
+        .expect(200)
+        .then(({ body }) => {
+          expect(Object.keys(body.booking)).toHaveLength(8)
+          expect(body.booking.status).toEqual(patchObj.status)
+        })
+      })
+      test("PATCH:400 returns error for incorrect type in body", () => {
+        const patchObj = { status: 55555};
+        return request(app)
+          .patch(`/api/bookings/2`)
+          .send(patchObj)
+          .expect(400)
+          .then(( {body} ) => {
+            expect(body.error.status).toBe("400: Bad Request");
+          });
+      });
+      test("PATCH:400 returns error for missing body", () => {
+        const patchObj = {};
+        return request(app)
+          .patch(`/api/bookings/2`)
+          .send(patchObj)
+          .expect(400)
+          .then(( {body} ) => {
+            expect(body.msg).toBe('400: Bad Request')
+          });
+      });
+    })

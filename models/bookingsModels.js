@@ -52,3 +52,35 @@ exports.fetchBookingsByEntertainerId = (entertainer_id) => {
     return rows
   })
 }
+
+
+exports.selectDeleteBooking = (booking_id) => {
+
+  return db.query(
+      `DELETE FROM bookings 
+       WHERE booking_id = $1 
+       RETURNING *;`,
+      [booking_id]
+  )
+  .then((result) => {
+    if (result.rowCount === 0) {
+      return Promise.reject(
+     { status: 404, 
+     msg: `404: route not found` });
+     }
+ });
+};
+
+exports.updateBooking= (booking_id, status) => {
+  return db 
+  .query(
+  `UPDATE bookings
+  SET status = $2
+  WHERE booking_id = $1
+  RETURNING *;`,
+  [booking_id, status]
+  )
+  .then(({rows}) => {
+      return rows[0];
+  })
+}
