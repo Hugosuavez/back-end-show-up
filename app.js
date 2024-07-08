@@ -46,7 +46,7 @@ app.get("/api/entertainers", getEntertainers);
 app.get("/api/entertainers/:user_id", getEntertainerById);
 app.get('/api/bookings', getAllBookings);
 app.get('/api/bookings/:booking_id', getBookingById);
-app.post('/api/bookings', postBookings)
+app.post('/api/bookings', authenticateJWT, postBookings)
 app.patch('/api/entertainers/:user_id', patchEntertainerById)
 app.get('/api/locations', getLocations)
 app.get('/api/categories', getCategories)
