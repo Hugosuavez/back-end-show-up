@@ -29,3 +29,17 @@ exports.updateAvailability = (entertainer_id, date) => {
         return rows[0];
     })
 }
+
+exports.addAvailability = (entertainer_id, date, available) => {
+  return db
+  .query(
+  `INSERT INTO availability (entertainer_id, date, available)
+  VALUES ($1, $2, $3)
+  RETURNING *
+  `
+  , [entertainer_id, date, available]
+  )
+  .then(({ rows }) => {
+    return rows[0];
+  })
+} 

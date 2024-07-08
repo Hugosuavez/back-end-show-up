@@ -1,4 +1,4 @@
-const { fetchAvailability, updateAvailability } = require("../models/availabilityModels");
+const { fetchAvailability, updateAvailability, addAvailability } = require("../models/availabilityModels");
 
 exports.getAvailability = (req, res, next) => {
     const { entertainer_id } = req.params;
@@ -36,3 +36,12 @@ exports.patchAvailability = (req, res, next) => {
     .catch(next);
 
 }
+
+exports.postAvailability = (req, res, next) => {
+    const { date, available, entertainer_id } = req.body;
+    addAvailability(entertainer_id, date, available).then((availability) => {
+      res.status(201).send({ availability })
+    })
+    .catch(next);
+} 
+
