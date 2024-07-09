@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const multer = require('multer');
+const path = require('path');
 
 const {
   getEntertainers,
@@ -33,6 +35,12 @@ const { authenticateJWT } = require("./controllers/authController");
 
 const app = express();
 
+
+const upload = multer({
+  dest: 'uploads/',
+  limits: { fileSize: 1024 * 1024 * 10 } // 10MB file size limit
+});
+
 // Middleware
 app.use(express.json());
 app.use(cors());
@@ -58,12 +66,18 @@ app.patch('/api/availability/:entertainer_id', patchAvailability)
 app.post('/api/availability', postAvailability)
 app.delete('/api/bookings/:booking_id', deleteBooking);
 app.patch('/api/bookings/:booking_id', patchBooking)
-
 app.get('/api/customer-bookings/:user_id', authenticateJWT, getBookingsByUserId)
 app.get('/api/entertainer-bookings/:entertainer_id', authenticateJWT, getBookingsByEntertainerId)
 
-
 app.get("/api", getEndpoints);
+
+//File upload route
+app.post('/upload', upload.single('file'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send('No file uploaded.');
+  }
+  res.send('File uploaded successfully.');
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
