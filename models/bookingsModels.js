@@ -36,7 +36,7 @@ exports.fetchBookingById = (bookingId) => {
 };
 
 exports.fetchBookingsByUserId = (user_id) => {
-  return db.query('SELECT bookings.*, users.first_name, users.last_name FROM bookings JOIN users ON users.user_id = bookings.user_id WHERE bookings.user_id = $1', [user_id]).then(({rows}) => {
+  return db.query('SELECT bookings.*, users.first_name, users.last_name FROM bookings JOIN users ON users.user_id = bookings.entertainer_id WHERE bookings.user_id = $1', [user_id]).then(({rows}) => {
     if (rows.length === 0) {
       return Promise.reject({ status: 404, msg: "id not found" });
     }
@@ -45,7 +45,7 @@ exports.fetchBookingsByUserId = (user_id) => {
 }
 
 exports.fetchBookingsByEntertainerId = (entertainer_id) => {
-  return db.query('SELECT bookings.*, users.first_name, users.last_name FROM bookings JOIN users ON users.user_id = bookings.entertainer_id WHERE bookings.entertainer_id = $1', [entertainer_id]).then(({rows}) => {
+  return db.query('SELECT bookings.*, users.first_name, users.last_name FROM bookings JOIN users ON users.user_id = bookings.user_id WHERE bookings.entertainer_id = $1', [entertainer_id]).then(({rows}) => {
     if (rows.length === 0) {
       return Promise.reject({ status: 404, msg: "id not found" });
     }
