@@ -8,7 +8,7 @@ exports.checkLocationIsValid = (location) => {
 }
 
 exports.fetchLocations = () => {
-    return db.query('SELECT * FROM locations').then((result) => {
+    return db.query('SELECT * FROM locations ORDER BY location ASC').then((result) => {
         return result.rows
     })
 }
