@@ -403,7 +403,7 @@ describe("GET /api/locations", () => {
   });
 });
 
-describe.only("GET /api/categories", () => {
+describe("GET /api/categories", () => {
   test("200: returns an array of category objects", () => {
     return request(app)
       .get("/api/categories")
@@ -809,7 +809,7 @@ describe("PATCH /api/availability/:entertainer_id", () => {
 })
 
 
-describe(('GET /api/customer-bookings/:user_id'), () => {
+describe.only(('GET /api/customer-bookings/:user_id'), () => {
   test('200: responds with array of bookings for selected user', () => {
     return request(app)
     .get('/api/customer-bookings/1')
@@ -851,13 +851,14 @@ describe(('GET /api/customer-bookings/:user_id'), () => {
   }) 
 
 
-  describe(('GET /api/entertainer-bookings/:entertainer_id'), () => {
+  describe.only(('GET /api/entertainer-bookings/:entertainer_id'), () => {
     test('200: responds with array of bookings for selected entertainer', () => {
       return request(app)
       .get('/api/entertainer-bookings/1')
       .set('Authorization', `${token}`)
       .expect(200)
       .then(({body}) => {
+        console.log(body.bookings)
         expect(body.bookings).toHaveLength(1)
         body.bookings.forEach((booking) => {
           expect(booking).toMatchObject({
