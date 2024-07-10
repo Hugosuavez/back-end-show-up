@@ -392,6 +392,7 @@ describe("GET /api/locations", () => {
       .get("/api/locations")
       .expect(200)
       .then(({ body }) => {
+        expect(body).toBeSortedBy('location')
         expect(body).toHaveLength(7);
         body.forEach((location) => {
           expect(location).toMatchObject({
@@ -402,12 +403,13 @@ describe("GET /api/locations", () => {
   });
 });
 
-describe("GET /api/categories", () => {
+describe.only("GET /api/categories", () => {
   test("200: returns an array of category objects", () => {
     return request(app)
       .get("/api/categories")
       .expect(200)
       .then(({ body }) => {
+        expect(body).toBeSortedBy('category')
         expect(body).toHaveLength(5);
         body.forEach((category) => {
           expect(category).toMatchObject({
