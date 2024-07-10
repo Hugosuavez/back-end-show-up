@@ -858,7 +858,7 @@ describe.only(('GET /api/customer-bookings/:user_id'), () => {
       .set('Authorization', `${token}`)
       .expect(200)
       .then(({body}) => {
-        console.log(body.bookings)
+        
         expect(body.bookings).toHaveLength(1)
         body.bookings.forEach((booking) => {
           expect(booking).toMatchObject({
