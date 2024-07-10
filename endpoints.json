@@ -164,7 +164,7 @@
         "status": "pending"
     }]
   },
-  "GET api/entertainer-bookings/:user_id": {
+  "GET api/entertainer-bookings/:entertainer_id": {
     "description": "gets an entertainers bookings when given their ID",
     "headers": {"Authorization": "JWT Token"},
     "queries": [],
@@ -200,5 +200,35 @@
         "https://upload.wikimedia.org/wikipedia/commons/7/7f/Emma_Watson_2013.jpg"
       ]
     }
-  }
+  },
+  "POST /api/availability": {
+    "description": "adds new availability",
+    "queries": [],
+    "requestBodyFormat": {
+      "entertainer_id": 2,
+      "date": "2024-07-01",
+      "available": false
+    },
+    "exampleResponse": {
+      "entertainer_id": 2,
+      "date": "2024-07-01",
+      "available": false
+    }
+  },
+  "DELETE /api/bookings/:booking_id": {
+    "description": "deletes the booking stated in the booking id",
+    "queries": [],
+    "exampleResponse": 
+      {  }
+  },
+  "PATCH /api/bookings/:booking_id": {
+    "description": "updates a bookings stated in the booking id",
+    "queries": [],
+    "patchObject": {
+         "status": "confirmed"
+    },
+    "exampleResponse": {
+         "status": "confirmed"
+    }
 } 
+}

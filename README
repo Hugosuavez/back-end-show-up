@@ -1,0 +1,45 @@
+# ShowUp! API
+
+--- 
+
+Welcome to ShowUp!
+
+This is the back end API of our application ShowUp!. A transformative new app that allows you to order an entertainer to your friend, family or colleagues doorstep!
+
+To clone this project:
+
+1. Visit the github page listed.
+2. Select clone and copy the URL.
+3. In the terminal on VSCode, type: git clone https://github.com/Hugosuavez/back-end-show-up.git
+
+Install the following dependencies in the terminal: 
+
+- npm install dotenv
+- npm install express
+- npm install pg
+- npm install pg-database
+- npm install pg-format
+- npm install --save-dev jest-sorted
+
+To seed the local database:
+
+- npm run seed 
+
+---
+
+To run tests:
+
+- Use the command: npm test integration
+
+You will also have to creat to .env files: 
+
+1. Create two new files: .env.test and .env.development 
+2. Into each, add PGDATABASE=, with the correct database name for that environment. Refer to the setup.sql if unsure on the database names.
+3. Add the two new .env files to the .gitignore file. 
+
+The minimum version of Node.js needed to run this project is >=6.0.0. 
+The minimumum version of Postgres need to run the project is >=4
+
+---
+
+This portfolio project was created as part of a Digital Skills Bootcamp in Software Engineering provided by [Northcoders](https://northcoders.com/)
